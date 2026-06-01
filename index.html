@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تقارير برمجة زياد العنزي</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+
+:root {
+  --navy: #0d2b3e;
+  --navy2: #1a4460;
+  --teal: #009688;
+  --teal2: #26a77a;
+  --accent: #2a7fc1;
+  --gold: #f0a500;
+  --border: #dde3ea;
+  --text: #1c2b38;
+  --muted: #6b8799;
+  --bg-card: #ffffff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Tajawal', Arial, sans-serif;
+  background: linear-gradient(145deg, #0d1e2a 0%, #0d2b3e 50%, #0a3040 100%);
+  min-height: 100vh;
+  direction: rtl;
+  color: var(--text);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ============================================================
+   TOP CONTROL BAR (Power BI Style)
+============================================================ */
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(13, 27, 46, 0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+#topbar .title {
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#topbar .title span { color: var(--teal2); }
+
+.btn-pdf {
+  background: linear-gradient(135deg, var(--teal2), var(--teal));
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Tajawal', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.btn-pdf:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+/* ============================================================
+   PAGE CANVAS AREA & RESPONSIVENESS (COMPACT FOR A4 ONE-PAGE)
+============================================================ */
+#canvas-area {
+  display: flex;
+  justify-content: center;
+  padding: 15px 15px 30px;
+}
+
+#page {
+  width: 1000px;
+  height: 1320px;
+  background: #f4f7f9;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* ─── HEADER ─── */
+#header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  min-height: 40px;
+  position: relative;
+  gap: 6px;
+}
+
+.header-block { display:flex; flex-direction:column; gap: 2px; color: #fff; line-height: 1; }
+.header-block.right { text-align:right; }
+.header-block .editable-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(255,255,255,0.25);
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 2px 4px;
+  outline: none;
+  width: 250px;
+  line-height: 1;
+}
+.header-block .editable-input:focus {
+  background: rgba(255,255,255,0.08);
+  border-bottom-color: var(--teal2);
+  border-radius: 4px;
+}
+.header-block h1 .editable-input { font-size: 14px; font-weight: 800; letter-spacing:0; }
+.header-block h2 .editable-input { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.88); letter-spacing:0; }
+
+/* Logo */
+#logo-center { display:flex; flex-direction:column; align-items:center; gap:2px; }
+#logo-dots { display:grid; grid-template-columns:repeat(7,7px); gap:3px; }
+.dot { width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.9); }
+.dot.sm { width:2px; height:2px; background:rgba(255,255,255,0.45); }
+.logo-ar { color:#fff; font-size: 16px; font-weight:800; letter-spacing:1px; }
+.logo-en { color:rgba(255,255,255,0.55); font-size: 16px; letter-spacing:1px; }
+
+/* ─── MID-CENTERED TITLE BANNER ─── */
+#program-title-banner {
+  background: linear-gradient(90deg, var(--navy2) 0%, var(--navy) 100%);
+  padding: 5px 18px;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--teal2);
+}
+#program-title-banner .title-display {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  width: 80%;
+  font-family: 'Tajawal', sans-serif;
+}
+
+/* ─── POWER BI SLICERS BAR ─── */
+#slicers-bar {
+  background: #ffffff;
+  padding: 6px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.slicer-group { display: flex; flex-direction: column; gap: 1px; }
+.slicer-label { font-size: 14px; font-weight: 700; color: var(--muted); }
+.slicer-select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  background-color: #fafbfc;
+  min-width: 250px;
+  cursor: pointer;
+}
+
+/* ─── DASHBOARD BODY ─── */
+#dashboard-body {
+  padding: 5px 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Program Info Row */
+.program-main-card {
+  background: var(--bg-card);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.program-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.info-item { display: flex; flex-direction: column; gap: 2px; }
+.info-label { font-size: 14px; font-weight: 700; color: var(--muted); }
+.info-val-input {
+  border: 1px solid transparent;
+  background: #f8fafc;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  outline: none;
+}
+.info-val-input:focus:not([readonly]) {
+  background: #ffffff;
+  border-color: var(--teal2);
+}
+
+/* KPIs Row */
+.kpi-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.kpi-card {
+  background: var(--bg-card);
+  border-radius: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before { content: ''; position: absolute; top:0; right:0; bottom:0; width:4px; background: var(--accent); }
+.kpi-card.success::before { background: var(--teal2); }
+#kpi-target { font-size: 14px !important; }
+.kpi-card.warning::before { background: var(--gold); }
+
+.kpi-title { font-size: 14px; font-weight: 700; color: var(--muted); border:none; background:transparent; outline:none; width:100%; font-family:"Tajawal", sans-serif; }
+#kpi-target, #kpi-count { font-size: 14px !important; font-weight:700; }
+.kpi-val-input {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  width: 100%;
+  font-family: 'Tajawal', sans-serif;
+}
+.kpi-sub-input {
+  font-size: 14px;
+  color: var(--teal2);
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-family: 'Tajawal', sans-serif;
+}
+
+/* Full Width sections */
+.full-width-card {
+  background: var(--bg-card);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f0f4f8;
+  padding-bottom: 4px;
+}
+.card-title-text { font-size: 14px; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 6px;}
+
+/* Grid lists for Objectives and Activities */
+.objectives-list, .activities-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.objective-row, .activity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fafbfc;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px dashed var(--border);
+}
+.obj-bullet, .act-bullet {
+  background: var(--teal2);
+  color: #fff;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.act-bullet { background: var(--accent); }
+
+.obj-textarea, .act-textarea {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.3;
+  resize: none;
+  outline: none;
+  height: 34px;
+  overflow: hidden;
+}
+
+@media print {
+  .obj-textarea, .act-textarea {
+    height: auto !important;
+    min-height: 34px !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+  }
+}
+
+/* ─── SHAWAHED BOX STYLINGS (FORCED 1 ROW ONLY × 6 IMAGES) ─── */
+.shawahed-grid-one-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.img-upload-box {
+  border: 2px dashed var(--border);
+  background: #fafbfc;
+  border-radius: 6px;
+  height: 95px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.img-upload-box:hover { border-color: var(--teal2); background: #f0fdf4; }
+.img-placeholder { text-align: center; color: var(--muted); font-size: 16px; }
+.img-placeholder .icon { font-size: 18px; color: var(--teal); margin-bottom: 2px; display: inline-block;}
+.img-upload-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+
+.notice-text { font-size: 16px; color: var(--muted); text-align: center; margin-top: 1px; }
+
+/* ─── FOOTER ─── */
+#footer {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 24px;
+  min-height: 45px;
+  position: relative;
+  color: rgba(255,255,255,0.8);
+  font-size: 16px;
+}
+#footer::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--teal2), var(--teal), var(--accent));
+}
+.footer-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(255,255,255,0.3);
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 16px;
+  padding: 1px;
+  outline: none;
+}
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES FOR SCREEN VIEW (TABLET & MOBILE)
+============================================================ */
+@media screen and (max-width: 1024px) {
+  #page { width: 100%; height: auto; min-height: 100vh; }
+  .program-grid { grid-template-columns: repeat(2, 1fr); }
+  .kpi-container { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media screen and (max-width: 768px) {
+  #header { flex-direction: column; text-align: center; padding: 15px; }
+  .header-block.right, .header-block.left { text-align: center !important; align-items: center; }
+  #slicers-bar { gap: 10px; padding: 12px; }
+  .slicer-select { min-width: 100%; }
+  .program-grid { grid-template-columns: 1fr; }
+  .kpi-container { grid-template-columns: 1fr; }
+  .objectives-list, .activities-list { grid-template-columns: 1fr; }
+  .shawahed-grid-one-row { grid-template-columns: repeat(3, 1fr); }
+  #footer { flex-direction: column; gap: 8px; text-align: center; padding: 15px; }
+}
+
+/* ============================================================
+   PRINT ONLY STYLING (ABSOLUTE CRITICAL ONE PAGE FORCED)
+============================================================ */
+@media print {
+  @page { size: A4 portrait; margin: 0 !important; }
+  html, body { height: 100% !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
+  #topbar, #slicers-bar, .img-placeholder, .notice-text { display: none !important; }
+  body { background: #ffffff !important; }
+  #canvas-area { padding: 0 !important; }
+  #page {
+    box-shadow: none !important;
+    width: 100% !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .program-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
+  .kpi-container { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
+  .objectives-list, .activities-list { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .shawahed-grid-one-row { display: grid !important; grid-template-columns: repeat(6, 1fr) !important; gap: 10px !important; }
+  .info-val-input { background: #ffffff !important; border: none !important; padding: 2px 0 !important; }
+  .img-upload-box { border: 1px solid #dde3ea !important; background: #ffffff !important; height: 85px !important; }
+  .img-upload-box:has(img) { border: none !important; }
+  .objective-row, .activity-row { background: #ffffff !important; }
+  #footer { position: absolute; bottom: 0; left: 0; right: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="title">بوابة التقارير التفاعلية تصميم زياد العنزي <span>| لوحة التحكم والتحرير المتناسقة</span></div>
+  <button class="btn-pdf" onclick="window.print()">⬇️ تصدير لوحة التحكم والطباعة الفورية (PDF)</button>
+</div>
+
+<div id="canvas-area">
+  <div id="page">
+
+    <div id="header">
+      <div class="header-block right">
+        <h1><input type="text" class="editable-input" value="المملكة العربية السعودية"></h1>
+        <h2><input type="text" class="editable-input" value="وزارة التعليم"></h2>
+        <h2><input type="text" class="editable-input" value="الإدارة العامة للتعليم بمنطقة الجوف"></h2>
+        <h2><input type="text" class="editable-input" value="مدرسة جابر بن حيان"></h2>
+      </div>
+
+      <div id="logo-center">
+        <div id="logo-dots">
+          <div class="dot sm"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot sm"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <div class="dot sm"></div><div class="dot"></div><div class="dot"></div><div class="dot sm"></div><div class="dot"></div><div class="dot"></div><div class="dot sm"></div>
+        </div>
+        <div class="logo-ar">وزارة التـعـليم</div>
+        <div class="logo-en">Ministry of Education</div>
+      </div>
+
+      <div class="header-block left" style="text-align: left;">
+        <div><strong>نوع التقرير:</strong> <input type="text" class="editable-input" value="تقرير تنفيذ برنامج" style="width:120px; text-align:left;"></div>
+        <div><strong>تاريخ التنفيذ:</strong> <input type="text" class="editable-input" value="1447/12/04هـ" style="width:120px; text-align:left;"></div>
+        <div><strong>حالة البرنامج:</strong> <input type="text" class="editable-input" value="مكتمل ومعتمد" style="width:120px; text-align:left; color:var(--teal2); font-weight:700;"></div>
+      </div>
+    </div>
+
+    <div id="program-title-banner">
+      <input type="text" class="title-display" id="top-banner-title" value="التطوع الطلابي" oninput="syncProgramName(this.value)">
+    </div>
+
+    <div id="slicers-bar">
+      <div class="slicer-group">
+        <span class="slicer-label">اختر البرنامج المالي/التطوعي/الوطني</span>
+        <select class="slicer-select" id="programSlicer" onchange="switchProgram()">
+          <option value="vol">التطوع الطلابي</option>
+          <option value="global_edu">اليوم العالمي للتعليم 🌍</option>
+          <option value="arabic_day">اليوم العالمي للغة العربية 🇸🇦</option>
+          <option value="tolerance_day">يوم التسامح العالمي 🤝</option>
+          <option value="child_day">اليوم العالمي للطفل 👶</option>
+          <option value="values_life">قيمنا حياة ✨</option>
+          <option value="art_gardens">حدائق الفن 🎨</option>
+          <option value="media_culture">الثقافة الإعلامية 📺</option>
+          <option value="group_sports">مهارات الرياضات الجماعية ⚽</option>
+          <option value="indiv_sports">مهارات الرياضات الفردية 🎾</option>
+          <option value="self_defense">مهارات رياضات الدفاع عن النفس 🥋</option>
+          <option value="e_sports">مهارات الرياضات الإلكترونية 🎮</option>
+          <option value="ai_prog">برنامج الذكاء الاصطناعي 🤖</option>
+          <option value="stem_apps">برنامج تطبيقات STEM 🔬</option>
+          <option value="my_community">مجتمعي مسؤوليتي 👥</option>
+          <option value="eco_ambassador">سفير البيئة والمجتمع 🌿</option>
+          <option value="homeland_heart">وطني في قلبي 🇸🇦</option>
+          <option value="change_makers">صناع التغيير ⚡</option>
+          <option value="islamic_cultures">ثقافات إسلامية 🕋</option>
+          <option value="prophet_guidance">من هدي النبي ﷺ 📜</option>
+          <option value="ihsan_path">درب الإحسان ❤️</option>
+          <option value="scout_horizon">أفقي الكشفي الواسع ⚜️</option>
+          <option value="values_principles">القيم والمبادئ 🌟</option>
+          <option value="public_decorum">الذوق العام ✨</option>
+          <option value="cyber_security">الأمن السيبراني 🔒</option>
+          <option value="social_emotional_intel">الذكاء الاجتماعي والعاطفي 🧠</option>
+          <option value="life_values">حياتنا قيم 💎</option>
+          <option value="sport_health">الرياضة والصحة 🍏</option>
+          <option value="child_support_line">برنامج خط مساندة الطفل 📞</option>
+          <option value="math_science_week">أسبوع الرياضيات والعلوم 📐</option>
+          <option value="child_protection">حماية الطفل 🛡️</option>
+          <option value="rifq_program">رفق (لحماية الطالب من التنمر) 🤝</option>
+          <option value="let_us_walk">مبادرة هيا نمشي 🚶</option>
+          <option value="blessed_morning">مبادرة بوركت لأمتي في بكورها 🌅</option>
+          <option value="hour_of_code">ساعة برمجة 💻</option>
+          <option value="reading_for_all">القراءة للجميع 📚</option>
+          <option value="nebras">نبراس (التوعية من المخدرات) 🚫</option>
+          <option value="takamul">تكامل (تعزيز السلوك الإيجابي) ⭐</option>
+          <option value="chem_week">أسبوع الكيمياء 🧪</option>
+          <option value="founding_day">يوم التأسيس السعودي 🇸🇦</option>
+          <option value="reading_challenge">مسابقة تحدي القراءة 📖</option>
+          <option value="cultural_contest">مسابقة ثقافية 🏆</option>
+          <option value="david_psalms">مسابقة مزامير داوود 🎤</option>
+          <option value="teachers_day">يوم المعلم العالمي 👨‍🏫</option>
+          <option value="ibda_olympiad">الأولمبياد الوطني إبداع 💡</option>
+          <option value="first_aid_day">اليوم العالمي للإسعافات الأولية 🚑</option>
+          <option value="life_skills">المهارات الحياتية 🛠️</option>
+          <option value="intellectual_awareness">الوعي الفكري 🧠</option>
+          <option value="quran_contest">مسابقة حفظ القرآن الكريم 📖</option>
+          <option value="plant_it">مبادرة نغرسها لننعم بها (بيئة) 🌱</option>
+          <option value="indiv_differences_workshop">ورشة عمل التعامل مع الفروق الفردية 👥</option>
+          <option value="activity_design_workshop">ورشة عمل تصميم الأنشطة 🛠️</option>
+          <option value="self_evaluation_workshop">ورشة عمل التقويم الذاتي 📝</option>
+          <option value="modern_evaluation_workshop">ورشة عمل أسلوب التقويم الحديث 📊</option>
+          <option value="scientific_research_workshop">ورشة عمل مهارات البحث العلمي 🔬</option>
+          <option value="psychological_guidance_course">دورة تدريبية الإرشاد النفسي والتربوي 📋</option>
+          <option value="family_communication">التواصل الفعال مع الأسرة 🏠</option>
+          <option value="classroom_behavior_management">إدارة السلوك الصفي 🏫</option>
+          <option value="modern_teaching_strategies">استراتيجيات التدريس الحديثة 💡</option>
+          <option value="tech_integration">دمج التقنية بالتعليم 💻</option>
+          <option value="mental_health">اليوم العالمي للصحة النفسية 🧠</option>
+          <option value="ambitious_skills">مهارات طموحة 🚀</option>
+          <option value="fatin_program">البرنامج الوقائي فطن 🛡️</option>
+          <option value="anti_corruption_day">اليوم العالمي لمكافحة الفساد 🚫</option>
+          <option value="green_impact">اترك أثرك أخضر 🌿</option>
+          <option value="positive_classroom_workshop">ورشة عمل بناء بيئة صفية إيجابية ✨</option>
+          <option value="one_minute_strategy">استراتيجية الدقيقة الواحدة ⏱️</option>
+          <option value="individual_care">الرعاية الفردية 👤</option>
+          <option value="innovation">الابتكار 💡</option>
+          <option value="visual_stories">حكايات مرئية 🎬</option>
+          <option value="future_cities">مدن المستقبل 🏙️</option>
+          <option value="iot_program">إنترنت الأشياء 🌐</option>
+          <option value="creativity_parenting">الإبداع في تربية الأبناء 👨‍👩‍👦</option>
+          <option value="misk_program">برنامج مسك 👑</option>
+          <option value="future_researcher">باحث المستقبل 🧐</option>
+          <option value="secure_family">أسرة آمنة 🏡</option>
+          <option value="mawhiba_program">برنامج موهبة التعليمي 🌟</option>
+          <option value="six_hats_course">دورة القبعات الست 🎩</option>
+          <option value="qatrat_test">اختبار القدرات 📝</option>
+          <option value="tahsili_test">الاختبار التحصيلي 📊</option>
+          <option value="step_test">اختبار Step 🔤</option>
+          <option value="my_character_represents_me">مبادرة خلقي يمثلني ⭐</option>
+          <option value="ethics_ambassadors">مبادرة سفراء الأخلاق 🏅</option>
+          <option value="digital_values_initiative">مبادرة القيم الرقمية 💻</option>
+          <option value="volunteer_your_skill">مبادرة تطوع بمهارتك 🤝</option>
+          <option value="biography_reflections">مبادرة تأملات في السيرة 📜</option>
+          <option value="rise_together">معاً نرتقي (أولياء الأمور) 👥</option>
+          <option value="new">جديد (تفريغ الحقول) ➕</option>
+        </select>
+      </div>
+      <div class="slicer-group">
+        <span class="slicer-label">المشرف المنفذ</span>
+        <select class="slicer-select" id="instructorSlicer" onchange="syncInstructor()">
+          <option value="رائد النشاط">رائد النشاط</option>
+          <option value="وكيل المدرسة">وكيل المدرسة</option>
+          <option value="منسق التطوع">منسق التطوع</option>
+          <option value="الموجه الطلابي">الموجه الطلابي</option>
+          <option value="المعلم">المعلم (فتح حقل الاسم) ✏️</option>
+        </select>
+      </div>
+      <div class="slicer-group">
+        <span class="slicer-label">نوع النشاط</span>
+        <select class="slicer-select" id="activityTypeSlicer">
+          <option value="all">الكل</option>
+          <option value="live">حضوري مباشر</option>
+          <option value="hybrid">مدمج / عن بعد</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="dashboard-body">
+      
+      <div class="program-main-card">
+        <div class="program-grid">
+          <div class="info-item">
+            <span class="info-label">اسم البرنامج</span>
+            <input type="text" class="info-val-input" id="prog-name" value="التطوع الطلابي" oninput="syncBannerTitle(this.value)">
+          </div>
+          <div class="info-item">
+            <span class="info-label">مكان التنفيذ المعين</span>
+            <input type="text" class="info-val-input" id="prog-loc" value="الفصول الدراسية">
+          </div>
+          <div class="info-item">
+            <span class="info-label"> المنفذ </span>
+            <input type="text" class="info-val-input" id="prog-instructor-display" value="رائد النشاط" readonly style="background: #edf2f7;">
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-container">
+        <div class="kpi-card success">
+          <span class="kpi-title">المستهدفون من البرنامج</span>
+          <input type="text" class="kpi-val-input" id="kpi-target" value="الطلاب">
+          <input type="text" class="kpi-sub-input" value="✓ شمولية كاملة للفئة">
+        </div>
+        <div class="kpi-card">
+          <input type="text" class="kpi-title" value="عدد الطلاب المستفيدين" style="border:none;background:transparent;outline:none;width:100%;font-family:'Tajawal', sans-serif;">
+          <input type="text" class="kpi-val-input" id="kpi-count" value="أكثر من 70">
+          <input type="text" class="kpi-sub-input" value="أعلى من المستهدف بـ 15%">
+        </div>
+        <div class="kpi-card warning">
+          <span class="kpi-title">تاريخ واعتماد التنفيذ</span>
+          <input type="text" class="kpi-val-input" id="kpi-date" value="1447/12/04هـ">
+          <input type="text" class="kpi-sub-input" value="موثق">
+        </div>
+      </div>
+
+      <div class="full-width-card">
+        <div class="card-header-bar">
+          <span class="card-title-text">⚡ الأنشطة المنفذة </span>
+        </div>
+        <div class="activities-list">
+          <div class="activity-row">
+            <div class="act-bullet">A</div>
+            <textarea class="act-textarea" id="act-1">تنظيم حملة توعوية داخل المدرسة للتعريف بالعمل التطوعي وآثاره.</textarea>
+          </div>
+          <div class="activity-row">
+            <div class="act-bullet">B</div>
+            <textarea class="act-textarea" id="act-2">توزيع الطلاب إلى فرق عمل ميدانية لتنظيف وتجميل مرافق المدرسة.</textarea>
+          </div>
+          <div class="activity-row">
+            <div class="act-bullet">C</div>
+            <textarea class="act-textarea" id="act-3">إقامة ورشة عمل تفاعلية مصغرة حول مهارات القيادة والمبادرة المجتمعية.</textarea>
+          </div>
+          <div class="activity-row">
+            <div class="act-bullet">D</div>
+            <textarea class="act-textarea" id="act-4">تكريم المجموعات الطلابية المتميزة في إنجاز المهام التطوعية الموكلة إليها.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="full-width-card">
+        <div class="card-header-bar">
+          <span class="card-title-text">🎯 الأهداف   </span>
+        </div>
+        <div class="objectives-list">
+          <div class="objective-row">
+            <div class="obj-bullet">1</div>
+            <textarea class="obj-textarea" id="obj-1">غرس ثقافة العمل التطوعي كقيمة دينية ووطنية راسخة لدى الطلاب.</textarea>
+          </div>
+          <div class="objective-row">
+            <div class="obj-bullet">2</div>
+            <textarea class="obj-textarea" id="obj-2">تنمية روح المبادرة الإيجابية والمسؤولية الاجتماعية الفاعلة تجاه البيئة المدرسية.</textarea>
+          </div>
+          <div class="objective-row">
+            <div class="obj-bullet">3</div>
+            <textarea class="obj-textarea" id="obj-3">إكساب الطلاب مهارات العمل الجماعي والقيادة التنموية وإدارة المبادرات.</textarea>
+          </div>
+          <div class="objective-row">
+            <div class="obj-bullet">4</div>
+            <textarea class="obj-textarea" id="obj-4">تفعيل دور الطالب بشكل فاعل ومستدام في خدمة بيئته المدرسية والمجتمعية.</textarea>
+          </div>
+          <div class="objective-row">
+            <div class="obj-bullet">5</div>
+            <textarea class="obj-textarea" id="obj-5">التعرف المباشر على مجالات التطوع المختلفة في الميدان واختيار الأنسب منها.</textarea>
+          </div>
+          <div class="objective-row">
+            <div class="obj-bullet">6</div>
+            <textarea class="obj-textarea" id="obj-6" placeholder="أدخل الهدف الاستراتيجي السادس المعتمد..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="full-width-card">
+        <div class="card-header-bar">
+          <span class="card-title-text">📸 الشواهد  </span>
+        </div>
+        <div class="shawahed-grid-one-row">
+          
+          <div class="img-upload-box" onclick="triggerImageUpload(1)">
+            <div class="img-placeholder" id="place-1"><span class="icon">🖼️</span><br><span>شاهد 1</span></div>
+            <input type="file" id="file-1" accept="image/*" style="display:none;" onchange="previewImage(event, 1)">
+            <img id="view-1" style="display:none;">
+          </div>
+
+          <div class="img-upload-box" onclick="triggerImageUpload(2)">
+            <div class="img-placeholder" id="place-2"><span class="icon">🖼️</span><br><span>شاهد 2</span></div>
+            <input type="file" id="file-2" accept="image/*" style="display:none;" onchange="previewImage(event, 2)">
+            <img id="view-2" style="display:none;">
+          </div>
+
+          <div class="img-upload-box" onclick="triggerImageUpload(3)">
+            <div class="img-placeholder" id="place-3"><span class="icon">🖼️</span><br><span>شاهد 3</span></div>
+            <input type="file" id="file-3" accept="image/*" style="display:none;" onchange="previewImage(event, 3)">
+            <img id="view-3" style="display:none;">
+          </div>
+
+          <div class="img-upload-box" onclick="triggerImageUpload(4)">
+            <div class="img-placeholder" id="place-4"><span class="icon">🖼️</span><br><span>شاهد 4</span></div>
+            <input type="file" id="file-4" accept="image/*" style="display:none;" onchange="previewImage(event, 4)">
+            <img id="view-4" style="display:none;">
+          </div>
+
+          <div class="img-upload-box" onclick="triggerImageUpload(5)">
+            <div class="img-placeholder" id="place-5"><span class="icon">🖼️</span><br><span>شاهد 5</span></div>
+            <input type="file" id="file-5" accept="image/*" style="display:none;" onchange="previewImage(event, 5)">
+            <img id="view-5" style="display:none;">
+          </div>
+
+          <div class="img-upload-box" onclick="triggerImageUpload(6)">
+            <div class="img-placeholder" id="place-6"><span class="icon">🖼️</span><br><span>شاهد 6</span></div>
+            <input type="file" id="file-6" accept="image/*" style="display:none;" onchange="previewImage(event, 6)">
+            <img id="view-6" style="display:none;">
+          </div>
+
+        </div>
+        <div class="notice-text">
+          ملاحظة نظامية: تظهر الشواهد المرفوعة مدمجة في مستند الـ PDF المطبوع بتناسق تام وبأبعاد هندسية موحدة.
+        </div>
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div>مدير المدرسة: <input type="text" class="footer-input" value="طلال سعيد الحارثي" style="width:160px; font-weight:700;"></div>
+      <div>نظام التقارير المعتمد في مدرسة جابر بن حيان [ Z10]</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function triggerImageUpload(index) {
+  document.getElementById('file-' + index).click();
+}
+
+function previewImage(event, index) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('view-' + index);
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('place-' + index).style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function syncProgramName(val) {
+  const el = document.getElementById('prog-name');
+  if (el.value !== val) el.value = val;
+}
+function syncBannerTitle(val) {
+  const el = document.getElementById('top-banner-title');
+  if (el.value !== val) el.value = val;
+}
+
+function syncInstructor() {
+  const selectBox = document.getElementById('instructorSlicer');
+  const targetInput = document.getElementById('prog-instructor-display');
+  
+  if (selectBox.value === "المعلم") {
+    targetInput.removeAttribute('readonly');
+    targetInput.value = "أدخل اسم المعلم هنا...";
+    targetInput.style.background = "#ffffff";
+    targetInput.style.border = "1px solid var(--teal2)";
+    targetInput.focus();
+    targetInput.select();
+  } else {
+    targetInput.setAttribute('readonly', '');
+    targetInput.value = selectBox.value;
+    targetInput.style.background = "#edf2f7";
+    targetInput.style.border = "1px solid transparent";
+  }
+}
+
+const altPrograms = {
+  vol: {
+    name: "التطوع الطلابي", loc: "الفصول الدراسية",
+    target: "الطلاب", count: "أكثر من 70", date: "1447/12/04هـ",
+    o1: "غرس ثقافة العمل التطوعي كقيمة دينية ووطنية راسخة لدى الطلاب.",
+    o2: "تنمية روح المبادرة الإيجابية والمسؤولية الاجتماعية الفاعلة تجاه البيئة المدرسية.",
+    o3: "إكساب الطلاب مهارات العمل الجماعي والقيادة التنموية وإدارة المبادرات.",
+    o4: "تفعيل دور الطالب بشكل فاعل ومستدام في خدمة بيئته المدرسية والمجتمعية.",
+    o5: "التعرف المباشر على مجالات التطوع المختلفة في الميدان واختيار الأنسب منها.",
+    o6: "تطوير الوعي بأهمية التكافل الاجتماعي وبناء شراكات مجتمعية فاعلة داخل المدرسة.",
+    a1: "تنظيم حملة توعوية داخل المدرسة للتعريف بالعمل التطوعي وآثاره.",
+    a2: "توزيع الطلاب إلى فرق عمل ميدانية لتنظيف وتجميل مرافق المدرسة.",
+    a3: "إقامة ورشة عمل تفاعلية مصغرة حول مهارات القيادة والمبادرة المجتمعية.",
+    a4: "تكريم المجموعات الطلابية المتميزة في إنجاز المهام التطوعية الموكلة إليها."
+  },
+  global_edu: {
+    name: "اليوم العالمي للتعليم", loc: "المسرح المدرسي",
+    target: "جميع الطلاب والمعلمين", count: "شامل لمنسوبي المدرسة", date: "1447/07/08هـ",
+    o1: "إبراز دور التعليم كحق أساسي وركيزة للتنمية المستدامة والنهضة الوطنية.",
+    o2: "تحفيز الطلاب على التميز الدراسي واستغلال الفرص التعليمية والتقنية الحديثة.",
+    o3: "تكريم الجهود التعليمية المتميزة داخل المدرسة وتعزيز مكانة المعلم.",
+    o4: "نشر ثقافة التعلم الذاتي والتعلم مدى الحياة بين أفراد المجتمع التعليمي.",
+    o5: "استعراض جهود المملكة في تطوير المناهج وبناء الشراكات التعليمية العالمية.",
+    o6: "توفير بيئة تربوية تضمن تكافؤ الفرص التعليمية لجميع مستويات الطلاب.",
+    a1: "تنظيم إذاعة مدرسية خاصة ومسابقات ثقافية حول تاريخ التعليم وتطوره.",
+    a2: "إقامة ندوة حوارية بعنوان (التعليم آفاق المستقبل) بمشاركة المعلمين والطلاب.",
+    a3: "إطلاق مبادرة لتكريم المعلمين والطلاب المتميزين في تفعيل المنصات التعليمية.",
+    a4: "تجهيز معرض مصغر يستعرض الوسائل التعليمية المبتكرة والتحول الرقمي بالتعليم."
+  },
+  arabic_day: {
+    name: "اليوم العالمي للغة العربية", loc: "المسرح المدرسي",
+    target: "كافة منسوبي المدرسة والطلاب", count: "مشاركة شاملة", date: "1447/06/19هـ",
+    o1: "الاعتزاز باللغة العربية كرمز للهوية الإسلامية والوطنية العريقة.",
+    o2: "إبراز جماليات لغة الضاد وإسهاماتها الفريدة في العلوم والثقافة الإنسانية.",
+    o3: "تنمية مهارات التحدث والخطابة والكتابة الإبداعية الفصيحة لدى الطلاب.",
+    o4: "تشجيع الطلاب على القراءة والمطالعة وتحسين جودة الإنتاج الأدبي.",
+    o5: "رصد وتكريم النماذج الطلابية الموهوبة في مجالات الشعر والخط العربي.",
+    o6: "محاربة التلوث اللغوي وحماية الفصحى في التعاملات والأنشطة المدرسية.",
+    a1: "إقامة حفل خطابة وثقافي متكامل يتضمن قصائد ومسرحية عن تاريخ اللغة العربية.",
+    a2: "معرض حي للخط العربي والزخرفة الإسلامية بمشاركة معلمي الفنية والطلاب.",
+    a3: "إطلاق مسابقة (فارس الإلقاء والخطابة) بالفصحى على مستوى المراحل.",
+    a4: "تصميم ونشر جدارية ثقافية إلكترونية تبرز بلاغة القرآن وإعجازه البياني."
+  },
+  tolerance_day: {
+    name: "يوم التسامح العالمي", loc: "الفصول والساحة الخارجية",
+    target: "جميع الطلاب", count: "كامل طلاب المدرسة", date: "1447/05/16هـ",
+    o1: "ترسيخ قيمة التسامح وقبول الآخر كأحد الركائز الأخلاقية الكبرى.",
+    o2: "بناء بيئة مدرسية آمنة وخالية من النزاعات والخلافات السلوكية.",
+    o3: "تنمية ذكاء الطلاب العاطفي وقدرتهم على حل المشكلات بشكل ودي.",
+    o4: "تعزيز التلاحم الاجتماعي والأخوة الإنسانية بين منسوبي المدرسة.",
+    o5: "غرس مبادئ الحوار الهادف والإنصات الفعال لدى الطلاب في كافة المراحل.",
+    o6: "إبراز سماحة الدين الإسلامي وعالمية مبادئه الإنسانية النبيلة.",
+    a1: "حلقة نقاشية طلابية بإشراف التوجيه الطلابي عن التسامح والاعتذار البناء.",
+    a2: "تصميم ونشر لوحات جدارية وبطاقات إرشادية تحمل شعار (متسامحون دائماً).",
+    a3: "تخصيص الإذاعة المدرسية لعرض مواقف من السيرة النبوية في العفو والصفح.",
+    a4: "تنفيذ مسابقة لأفضل خاطرة أو رسمة تعبر عن ثقافة التسامح والوئام."
+  },
+  child_day: {
+    name: "اليوم العالمي للطفل", loc: "ملعب ومسرح المدرسة",
+    target: "طلاب المرحلة الابتدائية والصفوف الأولية", count: "تفاعل بهيج", date: "1447/05/20هـ",
+    o1: "التوعية بحقوق الطفل التعليمية والصحية والتربوية والاجتماعية.",
+    o2: "توفير بيئة مدرسية ترفيهية وتعليمية تدعم النمو المتكامل للطفل.",
+    o3: "اكتشاف المواهب المبكرة لدى الأطفال ورعايتها وصقلها بالشكل السليم.",
+    o4: "تعزيز الثقة بالنفس والجرأة الأدبية لدى طلاب الصفوف الأولية.",
+    o5: "تكامل الأدوار بين المدرسة والأسرة لحماية الطفل ونموه النفسي.",
+    o6: "تنمية مهارات التفكير الإبداعي والذكاء الحركي من خلال الألعاب التربوية.",
+    a1: "إقامة مهرجان ترفيهي ثقافي يتضمن ألعاباً حركية ومسابقات ذكاء متنوعة.",
+    a2: "تقديم ورشة عمل رسم وتلوين حرة يعبر فيها الأطفال عن أحلامهم.",
+    a3: "عرض مسرحية تربوية قصيرة تناقش أهمية الانضباط والنظافة بأسلوب شيق.",
+    a4: "توزيع هدايا تذكارية ومطويات إرشادية خاصة بحقوق الطفل ورعايته."
+  },
+  values_life: {
+    name: "قيمنا حياة", loc: "مسرح المدرسة / الفصول",
+    target: "جميع الطلاب ومنسوبي المدرسة", count: "شامل ومستدام", date: "1447/02/15هـ",
+    o1: "تعزيز القيم الأخلاقية والإسلامية السامية في نفوس الطلاب والمجتمع التعليمي.",
+    o2: "تحويل القيم السلوكية النظرية إلى ممارسات وتطبيقات عملية يومية ملموسة.",
+    o3: "بناء شخصية طلابية متزنة وواعية تعتز بهويتها وثقافتها وتتحمل المسؤولية.",
+    o4: "خلق بيئة مدرسية إيجابية قائمة على الاحترام المتبادل والتعاون البناء.",
+    o5: "تعزيز دور القدوة الحسنة بين المعلمين والطلاب المتميزين سلوكياً.",
+    o6: "إشراك أولياء الأمور في دعم المنظومة القيمية وتكامل دور الأسرة والمدرسة.",
+    a1: "تدشين المعرض القيمي التوعوي المتنقل داخل المدرسة والتعريف بمرتكزاته.",
+    a2: "تقديم جلسات حوارية وقصصية جاذبة تستهدف تعزيز قيم الأمانة والاحترام.",
+    a3: "إطلاق مبادرة (سفير القيم) الأسبوعية لتكريم الطلاب المتميزين خلقياً.",
+    a4: "إنتاج ومضات مرئية ورسائل توعوية قصيرة وبثها عبر شاشات المدرسة والقنوات."
+  },
+  art_gardens: {
+    name: "حدائق الفن", loc: "مرسم التربية الفنية",
+    target: "الطلاب الموهوبين فنياً وتشكيلياً", count: "مشاركة إبداعية واسعة", date: "1447/08/10هـ",
+    o1: "رعاية الهوايات الفنية والتشكيلية لدى الطلاب وصقل ذوقهم الجمالي.",
+    o2: "توفير مساحة حرة للطلاب للتعبير عن مشاعرهم وأفكارهم من خلال الألوان.",
+    o3: "إكساب الطلاب مهارات وتقنيات الرسم والخط العربي والزخرفة الحديثة.",
+    o4: "توظيف الفن في معالجة بعض السلوكيات ونشر الرسائل التوعوية الإيجابية.",
+    o5: "تجميل مرافق وجدران المدرسة بلوحات إبداعية من إنتاج الطلاب.",
+    o6: "تأهيل الطلاب المتميزين للمشاركة في المعارض والمسابقات الفنية الوزارية.",
+    a1: "إطلاق مرسم حر وتنافسي لإنتاج لوحات وطنية وقيمية معبرة.",
+    a2: "إقامة ورشة عمل متخصصة في أساسيات الخط العربي والزخرفة الإسلامية.",
+    a3: "تنظيم معرض (حدائق الفن) الختامي لعرض لوحات ومجسمات الطلاب الموهوبين.",
+    a4: "تكريم الفائزين بأفضل الأعمال الفنية بشهادات تقدير وجوائز عينية قيمة."
+  },
+  media_culture: {
+    name: "الثقافة الإعلامية", loc: "مركز مصادر التعلم",
+    target: "الطلاب وأعضاء الإذاعة المدرسية", count: "قادة الإعلام التربوي", date: "1447/04/12هـ",
+    o1: "تنمية مهارات التفكير الناقد لدى الطلاب للتعامل الواعي مع الرسائل الإعلامية.",
+    o2: "تدريب الطلاب على فنون التحرير الصحفي والإلقاء الإذاعي وإعداد المحتوى.",
+    o3: "التوعية بمخاطر الشائعات وكيفية التحقق من مصادر الأخبار الرسمية.",
+    o4: "بناء فريق إعلامي واعد يسهم في توثيق ونشر إنجازات المدرسة.",
+    o5: "تعزيز مهارات التحدث والخطابة والمواجهة الجماهيرية بثقة وثبات.",
+    o6: "نشر قيم الأخلاقيات الرقمية والإعلامية في استخدام وسائل التواصل الاجتماعي.",
+    a1: "دورة تدريبية مكثفة حول (فن الإلقاء والتقديم الإذاعي المتميز).",
+    a2: "ورشة عمل تطبيقية حول صياغة الأخبار والتقارير الصحفية المدرسية.",
+    a3: "إنتاج نشرة إعلامية رقمية دورية تستعرض مناشط المدرسة ونجاحاتها.",
+    a4: "مسابقة (أفضل تقرير مرئي مصور) يلخص أحد البرامج المنفذة بالمدرسة."
+  },
+  group_sports: {
+    name: "مهارات الرياضات الجماعية", loc: "الصالة الرياضية والملعب",
+    target: "طلاب كافة المراحل والفرق الرياضية", count: "تفاعل رياضي مكثف", date: "1447/03/10هـ",
+    o1: "رفع مستوى اللياقة البدنية والصحة العامة لدى مجمل الطلاب.",
+    o2: "ترسيخ روح العمل الجماعي والتعاون والانسجام بين أفراد الفريق الواحد.",
+    o3: "تعليم الطلاب الخطط التكتيكية والمهارات الأساسية في كرة القدم والطائرة والسلة.",
+    o4: "بناء واكتشاف النواة الرياضية لتمثيل المدرسة في دوري التعليم.",
+    o5: "بث ثقافة الروح الرياضية وتقبل الفوز والخسارة بوعي ونضج.",
+    o6: "استثمار أوقات الفراغ في أنشطة حركية هادفة تحمي من الخمول والكسل.",
+    a1: "تنظيم دوري المدرسة الرياضي لكرة القدم والكرة الطائرة بين الفصول.",
+    a2: "حصص تدريبية متخصصة لتطوير مهارات التمرير, التسديد, والخطط الدفاعية.",
+    a3: "تقديم محاضرات توعوية قصيرة حول التغذية الرياضية السليمة وأهمية الإحماء.",
+    a4: "حفل ختامي لتتويج الفائزين بالبطولات المدرسية وتوزيع الكؤوس والميداليات."
+  },
+  indiv_sports: {
+    name: "مهارات الرياضات الفردية", loc: "صالة الألعاب الرياضية",
+    target: "الطلاب المهتمين بالألعاب الفردية", count: "مشاركة متميزة", date: "1447/05/05هـ",
+    o1: "تطوير المهارات الحركية الدقيقة والتركيز العالي لدى الطلاب.",
+    o2: "نشر وتعريف الطلاب بقواعد وأساسيات تنس الطاولة, الريشة, وألعاب القوى.",
+    o3: "تعزيز روح التحدي الذاتي وتطوير الأداء الشخصي المستمر.",
+    o4: "اكتشاف الطلاب الموهوبين في الألعاب الفردية لتمثيل المدرسة خارجياً.",
+    o5: "تشجيع ممارسة الرياضة الشخصية كنمط حياة يومي مستدام لحياة صحية.",
+    o6: "تحسين التوافق العضلي العصبي والسرعة الحركية لدى المشاركين.",
+    a1: "إقامة بطولة المدرسة المفتوحة لتنس الطاولة والريشة الطائرة.",
+    a2: "مسابقات وتحديات في ألعاب القوى (الجري السريع, الوثب العالي والمديد).",
+    a3: "ورش تدريبية لشرح القوانين الدولية المنظمة للألعاب الفردية المختلفة.",
+    a4: "تكريم الطلاب الحاصلين على المراكز الأولى في كافة الألعاب الفردية المستهدفة."
+  },
+  self_defense: {
+    name: "مهارات رياضات الدفاع عن النفس", loc: "صالة النشاط الرياضي",
+    target: "طلاب المرحلة الابتدائية والمتوسطة", count: "بناء جسدي قوي", date: "1447/06/11هـ",
+    o1: "بناء الشخصية القوية الواثقة وتنمية الشجاعة المنضبطة لدى الطلاب.",
+    o2: "تعليم الطلاب المبادئ والحركات الأساسية للدفاع عن النفس (الكاراتيه/التايكوندو).",
+    o3: "تحسين مستوى المرونة والتحمل والرشاقة والقدرة البدنية العامة.",
+    o4: "ترسيخ قيم احترام الخصم وعدم استخدام القوة البدنية إلا في الدفاع الشرعي.",
+    o5: "تفريغ الطاقات الحركية الزائدة لدى الطلاب بشكل إيجابي وتربوي منظم.",
+    o6: "تعزيز الانضباط السلوكي والالتزام بالتعليمات والقواعد الصارمة للعبة.",
+    a1: "استضافة مدرب معتمد لتقديم دورة أساسية في مهارات الكاراتيه والتايكوندو.",
+    a2: "تطبيق تدريبات عملية مكثفة على حركات الدفاع والصد والوقوف المتزن.",
+    a3: "عروض استعراضية للمهارات المكتسبة أمام الطلاب في الطابور الصباحي بانتظام.",
+    a4: "تكريم الطلاب المتميزين في الأداء والانضباط الحركي والسلوكي بالدورة."
+  },
+  e_sports: {
+    name: "مهارات الرياضات الإلكترونية", loc: "قاعة التقنيات الحديثة",
+    target: "الطلاب المهتمين بالرياضات الرقمية", count: "منافسات ذكية", date: "1447/07/20هـ",
+    o1: "تأطير وتنظيم شغف الطلاب بالألعاب الإلكترونية وتحويله إلى منافسة إيجابية.",
+    o2: "تنمية مهارات التخطيط الاستراتيجي, سرعة البديهة, والعمل الجماعي الرقمي.",
+    o3: "التوعية بأهمية التوازن بين الألعاب الإلكترونية والدراسة والصحة البدنية.",
+    o4: "شرح مواصفات الألعاب الآمنة والمفيدة والابتعاد عن الألعاب العنيفة وغير النظامية.",
+    o5: "اكتشاف الطلاب المتميزين في التحليل الرقمي والمنافسات الإلكترونية الرسمية.",
+    o6: "مواكبة التوجهات الوطنية والعالمية في دعم قطاع الرياضات الإلكترونية.",
+    a1: "تنظيم بطولة المدرسة الأولى للألعاب الإلكترونية التعليمية والاستراتيجية الآمنة.",
+    a2: "ندوة توعوية حول (الاستخدام الآمن والصحي للألعاب الإلكترونية والوقاية من الإدمان).",
+    a3: "ورشة عمل تفاعلية حول كيفية تصميم وتطوير الأفكار الأساسية للألعاب الرقمية.",
+    a4: "تكريم الفائزين بالمراكز الأولى وتوزيع هدايا تقنية قيمة ومحفزة للطلاب."
+  },
+  ai_prog: {
+    name: "برنامج الذكاء الاصطناعي", loc: "معمل الحاسب الآلي",
+    target: "طلاب النادي العلمي والموهوبين تقنياً", count: "مهندسو المستقبل الرقمي", date: "1447/04/25هـ",
+    o1: "تعريف الطلاب بمفاهيم الذكاء الاصطناعي والتحول الرقمي وأهميتهما المستقبيلة.",
+    o2: "إكساب الطلاب المهارات الأساسية في التعامل مع أدوات ونماذج الذكاء الاصطناعي.",
+    o3: "تحفيز التفكير الابتكاري وتوظيف التقنية في حل المشكلات المدرسية والمجتمعية.",
+    o4: "مواكبة مستهدفات رؤية المملكة 2030 في بناء مجتمع معرفي رقمي رائد.",
+    o5: "فتح آفاق علمية جديدة للطلاب تخدم توجهاتهم الأكاديمية والمهنية القادمة.",
+    o6: "التوعية بأخلاقيات استخدام الذكاء الاصطناعي والأمان الرقمي والموثوقية العلمية.",
+    a1: "ورشة عمل تطبيقية بعنوان (مقدمة في الذكاء الاصطناعي وتطبيقاته التعليمية).",
+    a2: "تدريب عملي على صياغة الأوامر الذكية واستخدام أدوات التوليد الرقمي الآمن.",
+    a3: "إطلاق مسابقة (أفضل فكرة لمشروع مدرسي يعتمد على تقنيات الذكاء الاصطناعي).",
+    a4: "عرض مرئي في الطابور الصباحي يستعرض الذكاء الاصطناعي التوليدي ومستقبله الهائل."
+  },
+  stem_apps: {
+    name: "برنامج تطبيقات STEM", loc: "المختبر العلمي ومعمل الحاسب",
+    target: "طلاب المسار العلمي وجماعة العلوم", count: "ابتكار علمي متكامل", date: "1447/05/18هـ",
+    o1: "دمج العلوم, التقنية, الهندسة, والرياضيات في منظومة تعليمية تطبيقية واحدة.",
+    o2: "تنمية مهارات التفكير الهندسي والتحليلي وحل المشكلات المعقدة لدى الطلاب.",
+    o3: "تحويل المفاهيم العلمية والنظرية إلى مشاريع ونماذج مجسمة ملموسة.",
+    o4: "تشجيع الطلاب على التعلم التعاوني القائم على الاستقصاء والمشاريع العملية.",
+    o5: "إعداد وتأهيل الطلاب للمشاركة الفاعلة في المسابقات العلمية الإقليمية والوطنية.",
+    o6: "ربط المخرجات التعليمية بالتطبيقات الحياتية والصناعية الحديثة بكفاءة عالية.",
+    a1: "ورشة عمل لبناء نماذج هندسية مصغرة باستخدام أدوات بسيطة ومتاحة.",
+    a2: "تنفيذ تجارب علمية مشتركة تجمع بين الكيمياء والرياضيات لشرح الظواهر.",
+    a3: "معرض (مشاريع STEM) لعرض ابتكارات الطلاب ونماذجهم الهندسية المصممة.",
+    a4: "تكريم الفرق الطلابية المتميزة في الابتكار والتصميم الهندسي للمشاريع العلمية."
+  },
+  my_community: {
+    name: "مجتمعي مسؤوليتي", loc: "قاعة الأنشطة والبيئة الخارجية",
+    target: "كافة الطلاب وجماعة المبادرات", count: "أثر مجتمعي مستدام", date: "1447/06/05هـ",
+    o1: "تنمية قيم المواطنة المسؤولة والانتماء الفاعل للمجتمع المحلي والمدرسي.",
+    o2: "غرس ثقافة المبادرة وتقديم العون والمساندة لشرائح المجتمع المختلفة.",
+    o3: "تعزيز دور المدرسة كمركز إشعاع تربوي وتنموي يخدم المحيط الخارجي.",
+    o4: "إكساب الطلاب مهارات التنظيم والقيادة والتخطيط للمبادرات المجتمعية المتميزة.",
+    o5: "ترسيخ مبادئ التكافل الاجتماعي والتراحم والتعاطف في نفوس الناشئة.",
+    o6: "بناء شراكات إيجابية ومثمرة مع المؤسسات والجمعيات الخيرية والاجتماعية.",
+    a1: "تنظيم حملة لزيارة المرضى في المستشفيات وتقديم هدايا تذكارية وتفاؤلية.",
+    a2: "إطلاق مبادرة لتوزيع سلال غذائية ومؤن على الأسر المحتاجة بالتعاون مع الجمعيات.",
+    a3: "ورشة عمل حوارية حول (دور الشاب في خدمة الحي وتطوير مرافقه العامة).",
+    a4: "حملة توعوية رقمية وميدانية لنشر ثقافة احترام كبار السن وتقديم العون لهم."
+  },
+  eco_ambassador: {
+    name: "سفير البيئة والمجتمع", loc: "محيط وفصول المدرسة",
+    target: "جماعة النشاط البيئي والطلاب", count: "رواد الاستدامة البيئية", date: "1447/03/15هـ",
+    o1: "رفع مستوى الوعي البيئي وأهمية الحفاظ على الموارد الطبيعية للأجيال القادمة.",
+    o2: "غرس سلوكيات الاستدامة وحماية البيئة المدرسية من التلوث والهدر بوعي.",
+    o3: "تأهل وتدريب نخبة من الطلاب ليكونوا سفراء للتوعية البيئية بين زملائهم وأسرهم.",
+    o4: "تفعيل برامج إعادة التدوير والاستفادة من المستهلكات المختلفة بالمدرسة.",
+    o5: "دعم مستهدفات مبادرة السعودية الخضراء في تقليل الانبعاثات وزيادة التشجير.",
+    o6: "تجميل وتحسين المظهر البصري والبيئي العام لكافة مرافق المدرسة الفاعلة.",
+    a1: "تعيين وتكريم (سفراء البيئة) في كل فصل دراسي لمتابعة النظافة وترشيد الطاقة.",
+    a2: "برنامج عملي لفرز وتجميع النفايات الورقية والبلاستيكية لإعادة تدويرها بانتظام.",
+    a3: "ورشة تدريبية حول الزراعة المنزلية والعناية بنباتات الظل والحدائق المصغرة.",
+    a4: "إطلاق حملة (مدرستي خضراء) لزيادة المساحات المشجرة داخل ومحيط أسوار المدرسة."
+  },
+  homeland_heart: {
+    name: "وطني في قلبي", loc: "الساحة العامة للمدرسة",
+    target: "جميع الطلاب والمعلمين والإداريين", count: "تلاحم وولاء كامل", date: "1447/02/05هـ",
+    o1: "تعميق قيم الولاء والانتماء الصادق للمليك والوطن والقيادة الرشيدة.",
+    o2: "تعريف الطلاب بالعمق التاريخي والحضاري للمملكة والمنجزات التنموية الهائلة.",
+    o3: "تحصين عقول الطلاب ضد الأفكار المنحرفة والدعوات المضللة التي تستهدف الوطن.",
+    o4: "إبراز دور المواطن الصالح في الحفاظ على أمن الوطن ومقدراته التنموية.",
+    o5: "تنمية الاعتزاز بالهوية الثقافية والتراثية الأصيلة للمجتمع السعودي بكافة مناطقها.",
+    o6: "تشجيع الطلاب على التعبير عن حبهم لوطنهم عبر كتابات وفنون إبداعية متميزة.",
+    a1: "تنفيذ مهرجان خطابي وشعري حافل بالقصائد الوطنية والكلمات التربوية الملهمة.",
+    a2: "مسابقة (أجمل مقال أو لوحة فنية) تعبر عن الولاء للقيادة والاعتزاز بالمنجزات.",
+    a3: "عرض مرئي وثائقي يستعرض مسيرة توحيد المملكة والنهضة الحضارية الشاملة.",
+    a4: "تزيين المدرسة بالأعلام والشعارات الوطنية وإنشاء جدارية حب ووفاء للوطن."
+  },
+  change_makers: {
+    name: "صناع التغيير", loc: "مركز مصادر التعلم",
+    target: "الطلاب المتميزين وقادة الفصول", count: "قادة وصناع المستقبل", date: "1447/04/08هـ",
+    o1: "بناء وتطوير مهارات القيادة والمسؤولية الشخصية والاجتماعية لدى الطلاب.",
+    o2: "تحفيز الطلاب على المبادرة والابتكار في تقديم الحلول للتحديات المدرسية.",
+    o3: "تنمية مهارات التخطيط الاستراتيجي, تحديد الأهداف, وإدارة الوقت بفعالية عالية.",
+    o4: "تعزيز ثقافة الإيجابية والإصرار والعمل الدؤوب لتحقيق النجاح والتميز المتكامل.",
+    o5: "إكساب الطلاب مهارات حل المشكلات واتخاذ القرارات السليمة بثقة تامة.",
+    o6: "تأهيل جيل من القادة الواعدين القادرين على قيادة المبادرات التطوعية بنجاح.",
+    a1: "برنامج تدريبي مكثف بعنوان (مهارات القيادة الفعالة للشباب وصناعة المبادرات).",
+    a2: "جلسات عصف ذهني طلابية لطرح أفكار ومقترحات تطويرية للبيئة التعليمية بالمدرسة.",
+    a3: "إطلاق تحدي (صناع التغيير) لأفضل مبادرة ينفذها الطلاب داخل فصولهم الدراسية.",
+    a4: "استعراض قصص نجاح لشخصيات وطنية وعالمية ملهمة أحدثت تغييراً إيجابياً في مجتمعاتها."
+  },
+  islamic_cultures: {
+    name: "ثقافات إسلامية", loc: "قاعة التوعية الفكرية والإسلامية",
+    target: "كافة طلاب المدرسة", count: "وعي ثقافي إسلامي", date: "1447/05/22هـ",
+    o1: "التعريف بعالمية الدين الإسلامي وسماحته وانتشاره في مختلف قارات العالم بوعي.",
+    o2: "ترسيخ قيم الاعتزاز بالهوية الإسلامية وتاريخها المشرق وإسهاماتها الحضارية الكبرى.",
+    o3: "تعزيز قيم التعايش والتسامح والإنصاف والعدالة التي يحث عليها الدين الحنيف.",
+    o4: "استعراض التنوع الثقافي والمعماري والأدبي للشعوب والمجتمعات الإسلامية المتعددة.",
+    o5: "تنمية مهارات البحث والتقصي التاريخي والثقافي لدى الطلاب المشاركين بالبرنامج.",
+    o6: "ربط الطلاب بالحضارة الإسلامية وإسهامات علمائها الأجلاء في بناء النهضة الحديثة.",
+    a1: "إقامة معرض (الحضارة الإسلامية عبر القارات) يضم لوحات ومجسمات تعريفية شاملة.",
+    a2: "مسابقة ثقافية كبرى حول تاريخ العلوم في الإسلام ومآثر العلماء المسلمين الأوائل.",
+    a3: "عرض مرئي وثائقي يستعرض العمارة الإسلامية والتنوع الثقافي في العالم الإسلامي.",
+    a4: "ندوة حوارية تربوية تتناول سماحة الإسلام وأثره في نشر السلام والوئام العالمي."
+  },
+  prophet_guidance: {
+    name: "من هدي النبي ﷺ", loc: "مصلى المدرسة",
+    target: "كافة منسوبي المدرسة والطلاب", count: "اقتداء وتطبيق سلوكي", date: "1447/03/12هـ",
+    o1: "غرس محبة الرسول ﷺ في نفوس الطلاب وترجمتها إلى سلوك واقتداء عملي دائم.",
+    o2: "تعريف الطلاب بالشمائل النبوية والأخلاق المحمدية السامية وتطبيقها في الحياة.",
+    o3: "ترسيخ قيم الأدب, الاحترام, الصدق, والأمانة انطلاقاً من التوجيهات النبوية الكريمة.",
+    o4: "تحسين السلوك العام والانضباط الأخلاقي داخل وخارج أسوار البيئة المدرسية.",
+    o5: "ربط الطلاب بالسنة النبوية المطهرة وفهم الأحاديث الشريفة فهمًا صحيحًا وواعيًا.",
+    o6: "إبراز دور المنهج النبوي الشريف في بناء مجتمع متراحم ومترابط يسوده السلام.",
+    a1: "حملة سلوكية ممتدة بعنوان (بأخلاقه نقتدي) تركز على خلق نبوي محدد كل أسبوع.",
+    a2: "مسابقة لحفظ وشرح أربعين حديثاً نبوياً تتعلق بالأخلاق والتعاملات اليومية الراسخة.",
+    a3: "برنامج إذاعي يومي مخصص لعرض مواقف وقصص من السيرة النبوية في العفو والتعامل.",
+    a4: "تكريم الطلاب المتميزين والمطبقين للهدي النبوي في تعاملاتهم اليومية مع زملائهم المعلمين."
+  },
+  ihsan_path: {
+    name: "درب الإحسان", loc: "الفصول والقاعة الكبرى",
+    target: "جميع فئات الطلاب بالمدرسة", count: "ممارسات إحسانية شاملة", date: "1447/04/20هـ",
+    o1: "ترسيخ خلق الإحسان كمرتبة إيمانية عليا وقيمة سلوكية شاملة في الحياة اليومية.",
+    o2: "تشجيع الطلاب على التميز والإتقان في أداء العبادات والواجبات المدرسية والعلمية.",
+    o3: "نشر ثقافة التعامل الإحساني والرفق والكلمة الطيبة مع الوالدين, المعلمين, والزملاء.",
+    o4: "إطلاق مبادرات تطوعية وإنسانية تعكس مفهوم الإحسان للمجتمع والبيئة المحيطة.",
+    o5: "تنمية الضمير الحي والانضباط الذاتي لدى الطلاب في غياب الرقابة المباشرة.",
+    o6: "تكريم النماذج الطلابية التي تمثل قيم الإحسان والإتقان في سلوكها وأدائها الأكاديمي.",
+    a1: "إطلاق حزمة رسائل توعوية وبطاقات رقمية تحث على الإتقان والإحسان في العمل والدراسة.",
+    a2: "تنفيذ مبادرة (مُحسن المدرسة) لرصد وتكريم السلوكيات الإيجابية والإحسانية العفوية للطلاب.",
+    a3: "ورشة عمل تربوية تفاعلية بعنوان (الإحسان... مفهومه, ثماره, وتطبيقاته في حياتنا).",
+    a4: "تنظيم حملة تطوعية صامتة لإحسان التعامل مع ممتلكات المدرسة ومرافقها والكتب الدراسية."
+  },
+  scout_horizon: {
+    name: "أفقي الكشفي الواسع", loc: "المخيم الكشفي وساحة المدرسة",
+    target: "فرقة الكشافة المدرسية والطلاب الجدد", count: "أداء كشفي متميز وعالي", date: "1447/05/14هـ",
+    o1: "تأصيل وتنمية المبادئ والحركة الكشفية كمنظومة لبناء الشخصية المتكاملة.",
+    o2: "غرس قيم الاعتماد على النفس, الصبر, والانضباط الصارم والعمل بروح الفريق الواحد.",
+    o3: "تدريب الطلاب على المهارات الكشفية الأساسية مثل العقد, الربطات, والصافرات والطهي.",
+    o4: "تفعيل دور الفرقة الكشفية في خدمة وتنظيم البرامج والفعاليات المدرسية المختلفة.",
+    o5: "تنمية روح المواطنة الصالحة والخدمة العامة المجتمعية لدى أفراد الكشافة.",
+    o6: "تأهيل الطلاب للمشاركة الفاعلة والمشرفة في المعسكرات والتجمعات الكشفية الخارجية.",
+    a1: "إقامة تجمع ومخيم تدريبي داخلي لشرح التقاليد الكشفية والمهارات الحركية والميدانية.",
+    a2: "ورشة عمل تطبيقية حول الإسعافات الأولية والإنقاذ وإدارة الأزمات والطوارئ بالتعاون.",
+    a3: "إسناد مهام تنظيم الطابور الصباحي والمناسبات المدرسية الكبرى لفرقة الكشافة بانتظام.",
+    a4: "تنظيم رحلة خلوية كشفية لتطبيق مهارات الطهي الخلوي, القراءة, والاتجاهات بالميدان."
+  },
+  values_principles: {
+    name: "القيم والمبادئ", loc: "مركز مصادر التعلم والفصول",
+    target: "كافة طلاب المدرسة ومنسوبيها", count: "بناء قيمي مستدام ومتكامل", date: "1447/02/20هـ",
+    o1: "تأصيل القيم الإسلامية والمبادئ التربوية السامية في نفوس وعقول الطلاب.",
+    o2: "تحويل المبادئ الأخلاقية النظرية إلى سلوكيات وممارسات يومية معتمدة بالمدرسة.",
+    o3: "حصونة الطلاب وحمايتهم أخلاقياً وفكرياً ضد التيارات والأفكار السلوكية الوافدة.",
+    o4: "تعزيز قيم الاحترام, الأمانة, الصدق, والمسؤولية الشخصية والاجتماعية الفاعلة.",
+    o5: "بناء شخصية متزنة تعتز بهويتها الوطنية والإسلامية وتلتزم بالمبادئ السلوكية.",
+    o6: "تكامل الدور التربوي بين الأسرة والمدرسة لبناء منظومة قيمية متينة ومستدامة.",
+    a1: "إطلاق حملة توعوية أسبوعية تركز على قيمة محددة (الصدق, الأمانة, الاحترام) بالوسائط.",
+    a2: "برنامج إذاعي تفاعلي يعرض مواقف وقصص ملهمة تجسد الالتزام بالمبادئ والأخلاق.",
+    a3: "مسابقة (وسام الأخلاق) لتكريم الطالب المثالي في كل فصل دراسي بانتظام.",
+    a4: "عقد لقاءات حوارية قصيرة بين الموجه الطلابي والطلاب لمناقشة السلوكيات الإيجابية."
+  },
+  public_decorum: {
+    name: "الذوق العام", loc: "الساحات العامة والفصول الدراسية",
+    target: "جميع منسوبي المدرسة والطلاب", count: "بيئة مدرسية راقية", date: "1447/03/08هـ",
+    o1: "نشر ثقافة الالتزام بلائحة الذوق العام والمحافظة على الآداب السلوكية بالمجتمع.",
+    o2: "غرس آداب التعامل الراقية والحديث والإنصات واحترام الخصوصية لدى الطلاب.",
+    o3: "تعزيز السلوك الحضاري في التعامل مع المرافق العامة وممتلكات المدرسة والبيئة.",
+    o4: "التوعية بأهمية المظهر الحسن والنظافة الشخصية والالتزام بالزي المدرسي المعتمد.",
+    o5: "الحد من السلوكيات والممارسات غير اللائقة داخل وخارج أسوار البيئة التربوية.",
+    o6: "بناء جيل واعٍ يمثل وطنه ومجتمعه بأرقى الممارسات والأخلاقيات الإنسانية النبيلة.",
+    a1: "حملة توعوية ميدانية داخل المدرسة لشرح بنود وآداب الذوق العام في الحياة اليومية.",
+    a2: "تصميم ونشر جداريات وبطاقات إرشادية أنيقة تحمل رسائل (ذوقي يحدد تميزي).",
+    a3: "تخصيص حصص النشاط والإذاعة لعرض الآداب الإسلامية والوطنية في السلوك والمظهر.",
+    a4: "تكريم الفصول والطلاب الأكثر التزاماً بالنظافة, المظهر, والآداب العامة المتميزة."
+  },
+  cyber_security: {
+    name: "الأمن السيبراني", loc: "معمل الحاسب الآلي والمصادر",
+    target: "طلاب المرحلة المتوسطة والثانوية المعلمين", count: "وعي وحماية رقمية ذكية", date: "1447/06/10هـ",
+    o1: "رفع مستوى الوعي بالأمن السيبراني وحماية البيانات الشخصية والملفات الحساسة.",
+    o2: "تعريف الطلاب بالجرائم المعلوماتية, مخاطر الاختراق, وآليات الوقاية الفعالة والموثوقة.",
+    o3: "إكساب الطلاب مهارات التعامل الآمن مع شبكة الإنترنت ومنصات التواصل الاجتماعي.",
+    o4: "شرح بروتوكولات حماية الحسابات الشخصية وصناعة كلمات المرور القوية والمعقدة.",
+    o5: "توجيه الشغف التقني لدى الطلاب نحو مجالات الأمن السيبراني والبرمجة الأخلاقية الواعدة.",
+    o6: "مواكبة الجهود الوطنية الضخمة للهيئة الوطنية للأمن السيبراني في نشر الوعي الرقمي.",
+    a1: "دورة تدريبية تطبيقية ومكثفة بعنوان (طرق الحماية الرقمية والوقاية من الهجمات السيبرانية).",
+    a2: "حملة توعوية إذاعية لفرز وشرح مواد نظام مكافحة الجرائم المعلوماتية السعودي.",
+    a3: "ورشة عمل عملية حول كيفية تأمين الحسابات الشخصية وتفعيل التحقق الثنائي بذكاء.",
+    a4: "مسابقة معرفية إلكترونية (سيبراني واعي) لرصد قياس مستوى الوعي الرقمي وتكريم الفائزين."
+  },
+  social_emotional_intel: {
+    name: "الذكاء الاجتماعي والعاطفي", loc: "قاعة الإرشاد الطلابي",
+    target: "الطلاب والموجهين والمعلمين", count: "استقرار وتوازن نفسي عالي", date: "1447/04/14هـ",
+    o1: "تنمية مهارات الذكاء العاطفي والاجتماعي وفهم الذات وإدارتها بكفاءة ونضج.",
+    o2: "تمكين الطلاب من التعرف على مشاعرهم والتحكم في الانفعالات وضغوط الدراسة بذكاء.",
+    o3: "تطوير مهارات التعاطف وبناء العلاقات الإيجابية المثمرة مع الزملاء والمجتمع.",
+    o4: "تحسين بيئة التعلم وتقليل المشكلات السلوكية والنزاعات الطلابية داخل الفصول.",
+    o5: "غرس مهارات التواصل الفعال, الإنصات, والقدرة على حل المشكلات وامتصاص الغضب.",
+    o6: "تعزيز الثقة بالنفس والمرونة النفسية لمواجهة التحديات الأكاديمية واليومية بثبات.",
+    a1: "ورشة عمل تفاعلية وتدريبية بعنوان (كيف تدير عواطفك وتصنع علاقاتك بنجاح وذكاء).",
+    a2: "جلسات إرشادية وتطبيقات عملية على مهارات الاسترخاء والتحكم في الغضب والانفعال.",
+    a3: "مسابقة لتصميم مقاطع فيديو قصيرة أو خواطر تعزز التعاطف ومساعدة الآخرين بالمدرسة.",
+    a4: "تقديم استشارات تربوية ونفسية فردية وجماعية لدعم الطلاب في بناء شخصية متزنة."
+  },
+  life_values: {
+    name: "حياتنا قيم", loc: "الفصول الدراسية وقاعة الأنشطة",
+    target: "جميع طلاب المدرسة بمنسوبيها", count: "منظومة قيمية شاملة وممتدة", date: "1447/03/02هـ",
+    o1: "تأصيل وبناء القيم الإنسانية والتربوية الكبرى في الممارسات اليومية للطالب.",
+    o2: "ربط السلوك الطلابي بالمنظومة القيمية الإسلامية والوطنية الأصيلة والراسخة.",
+    o3: "تعزيز الانضباط الذاتي والمسؤولية الفردية تجاه المجتمع والبيئة المدرسية.",
+    o4: "خلق مناخ تعليمي وتربوي يقوم على الاحترام المتبادل, الصدق, وإتقان العمل.",
+    o5: "تحفيز الطلاب على التميز الأخلاقي والسلوكي وجعله معياراً أساسياً للتفوق الشخصي.",
+    o6: "تفعيل الشراكة مع أولياء الأمور لتوحيد الرسالة القيمية بين البيت والمدرسة.",
+    a1: "إطلاق المبادرة السلوكية المتميزة (قيمة الأسبوع) وتفعيلها في كافة المناشط والوسائط.",
+    a2: "معرض قيمي تفاعلي متنقل لعرض مشاريع الطلاب ورسوماتهم المعبرة عن القيم.",
+    a3: "سلسلة ومضات توعوية وقصص ملهمة تبث عبر شاشات المدرسة الذكية وقنوات التواصل.",
+    a4: "احتفالية دورية لتكريم (فرسان القيم) من الطلاب والمعلمين الأكثر تميزاً أخلاقياً."
+  },
+  sport_health: {
+    name: "الرياضة والصحة", loc: "الصالة الرياضية والملعب المعتمد",
+    target: "جميع الطلاب وأعضاء النادي الصحي", count: "وعي صحي وحركي كامل", date: "1447/05/28هـ",
+    o1: "نشر ثقافة الوعي الصحي وأهمية ممارسة النشاط البدني كنمط حياة يومي مستدام.",
+    o2: "مكافحة السمنة, الخمول, والكسل وبناء جيل يتمتع بلياقة بدنية وصحية عالية.",
+    o3: "تعريف الطلاب بالأسس السليمة للتغذية المتوازنة وكيفية حساب السعرات واختيار الغذاء.",
+    o4: "تحسين الصحة النفسية والمزاجية والتحصيل الدراسي للطلاب عبر ممارسة الرياضة بانتظام.",
+    o5: "التوعية بأضرار العادات الغذائية السيئة ومشروبات الطاقة والوجبات السريعة الضارة.",
+    o6: "تفعيل العيادة المدرسية والموجه الصحي في المتابعة الدورية والوقائية للطلاب.",
+    a1: "إطلاق حملة (صحتي في حركتي) لممارسة التمارين الرياضية الصباحية الخفيفة والمنظمة.",
+    a2: "قياس مؤشر كتلة الجسم (BMI) للطلاب وتقديم استشارات غذائية مخصصة وعلمية.",
+    a3: "ورشة عمل تدريبية وتفاعلية حول إعداد الوجبات الصحية السليمة وحساب السعرات.",
+    a4: "تنظيم دوري رياضي تنافسي ومسابقات جري تحت شعار (الرياضة وقاية وصحة مستدامة)."
+  },
+  child_support_line: {
+    name: "برنامج خط مساندة الطفل", loc: "قاعة التوجيه والإرشاد والمسرح",
+    target: "طلاب المراحل الأولية وجميع المستويات", count: "وعي كامل وحماية نظامية", date: "1447/04/19هـ",
+    o1: "التعريف بخط مساندة الطفل (116111) كجهة رسمية تقدم الدعم والمشورة الآمنة للأطفال.",
+    o2: "توعية الطلاب بكيفية التصرف والتعامل السليم عند التعرض لأي مشكلات أو ضغوط نفسية.",
+    o3: "بناء الوعي بالحقوق النظامية والتربوية والاجتماعية للطفل بالمدرسة والمجتمع.",
+    o4: "تعزيز قدرة الطلاب على التعبير عن المشكلات وطلب المساندة من الجهات التربوية المختصة.",
+    o5: "تدريب المعلمين وأولياء الأمور على آليات رصد المؤشرات النفسية والسلوكية المقلقة.",
+    o6: "توفير بيئة تعليمية آمنة ومحمية تدعم الاستقرار النفسي والنمو السليم للطالب.",
+    a1: "حملة إرشادية وتوعوية مكثفة لتوزيع بطاقات برقم خط مساندة الطفل وكيفية الاتصال.",
+    a2: "تقديم عروض مرئية ومسرحيات تربوية تشرح دور خط المساندة بأسلوب جاذب ومشوق.",
+    a3: "تخصيص الإذاعة المدرسية وحصص النشاط لنشر رسائل إرشادية حول طلب المساعدة والثقة.",
+    a4: "ورشة عمل للموجه الطلابي والمعلمين حول (آليات التدخل السريع والتعامل مع بلاغات المساندة)."
+  },
+  math_science_week: {
+    name: "أسبوع الرياضيات والعلوم", loc: "المختبرات المدرسية والقاعات",
+    target: "كافة طلاب المدرسة والمسار العلمي", count: "شغف علمي وتنافسي واسع", date: "1447/06/24هـ",
+    o1: "تبسيط مفاهيم العلوم والرياضيات وتحبيبها للطلاب عبر التطبيقات العملية المشوقة.",
+    o2: "تنمية مهارات التفكير المنطقي, الاستنتاج, والتحليل الرياضي والإبداعي لدى الطلاب.",
+    o3: "إبراز أهمية العلوم والرياضيات في حياتنا اليومية وفي بناء الثورة الصناعية والتقنية.",
+    o4: "اكتشاف ورعاية الطلاب الموهوبين والبارعين في حل المسائل والتجارب المعقدة والمتميزة.",
+    o5: "تشجيع الطلاب على الابتكار وتصميم الوسائل التعليمية والمجسمات العلمية والرياضية.",
+    o6: "تأهل الطلاب وتدريبهم للمشاركة الفاعلة في الأولمبيادات والمسابقات العلمية والوطنية.",
+    a1: "معرض تفاعلي بعنوان (عجائب العلوم وسحر الرياضيات) يضم تجارب حية ومجسمات هندسية.",
+    a2: "إطلاق مسابقة (العداد السريع والحلول الذكية) للمسائل الرياضية والذهنية التنافسية.",
+    a3: "تنفيذ تجارب كيميائية وفيزيائية آمنة ومبهرة في ساحة المدرسة لجذب انتباه الطلاب بوعي.",
+    a4: "ورش عمل تدريبية حول استراتيجيات حل مسائل أولمبياد الرياضيات والعلوم المعتمدة."
+  },
+  child_protection: {
+    name: "حماية الطفل", loc: "مركز مصادر التعلم وقاعة الإرشاد",
+    target: "الطلاب, المعلمين, وأولياء الأمور", count: "بيئة تعليمية محصنة وآمنة", date: "1447/05/11هـ",
+    o1: "ترسيخ وتفعيل الوعي بنظام حماية الطفل من كافة أشكال الإيذاء, الإهمال, والتنمر.",
+    o2: "تثقيف الطلاب وتدريبهم على مهارات حماية الذات والدفاع عن النفس بالطرق التربوية السليمة.",
+    o3: "بناء بيئة مدرسية آمنة, داعمة, ومحفزة تضمن النمو النفسي والجسدي والتربوي السليم.",
+    o4: "تدريب الهيئة التعليمية والإدارية على آليات الرصد والاكتشاف والتبليغ النظامي للحالات.",
+    o5: "تعزيز التواصل والتكامل بين المدرسة والأسرة ومؤسسات الحماية الاجتماعية والتربوية.",
+    o6: "نشر ثقافة الرفق والمعاملة الحسنة والوقاية من السلوكيات العدوانية بين الأقران بوعي.",
+    a1: "محاضرة توعوية بالتعاون مع الجهات المختصة حول (نظام حماية الطفل وحقوقه النظامية والتربوية).",
+    a2: "ورشة عمل تدريبية وتفاعلية للطلاب بعنوان (كيف أحمي نفسي وأحافظ على سلامتي الرقمية والجسدية).",
+    a3: "بث رسائل إرشادية وتوعوية قصيرة عبر الشاشات الداخلية ومجموعات التواصل لأولياء الأمور.",
+    a4: "تخصيص صندوق آمن ومغلق للاستشارات والبلاغات السرية تحت إشراف وتوجيه الموجه الطلابي بانتظام."
+  },
+  rifq_program: {
+    name: "رفق (لحماية الطالب من التنمر)", loc: "المسرح المدرسي والفصول",
+    target: "جميع طلاب المدرسة والهيئة التعليمية", count: "بيئة مدرسية خالية من التنمر", date: "1447/03/15هـ",
+    o1: "تأصيل خلق الرفق واللين والتعامل الراقي كقيمة إسلامية وسلوكية كبرى في نفوس الطلاب.",
+    o2: "الحد وخفض الممارسات العدوانية والتنمر بكافة أشكاله (اللفظي, الجسدي, الرقمي) بالمدرسة.",
+    o3: "توعية الطلاب بآثار التنمر السلبية على الصحة النفسية والتحصيل الدراسي لزملائهم بوعي.",
+    o4: "بناء علاقات اجتماعية إيجابية قائمة على الاحترام المتبادل, الأخوة, والتعاون البناء.",
+    o5: "تزويد الطلاب بالمهارات السليمة للتعامل مع المتنمرين وكيفية الإبلاغ والطلب الفوري للمساعدة.",
+    o6: "تمكين الموجه الطلابي من تقديم البرامج الإرشادية العلاجية والوقائية الناجعة بتميز.",
+    a1: "تدشين حملة (الأسبوع المكثف لبرنامج رفق) في الإذاعة المدرسية والوسائط الإعلامية المختلفة.",
+    a2: "ورش عمل تفاعلية وجلسات حوارية للطلاب لمناقشة مظاهر التنمر والبدائل السلوكية الراقية.",
+    a3: "إطلاق مسابقة لإنتاج أفضل محتوى توعوي (فيديو, رسمة, مقال) يحمل شعار (رفقاً بزملائي).",
+    a4: "تكريم الطلاب المتميزين سلوكياً وأصحاب المبادرات الإيجابية في نشر ثقافة الرفق والوئام."
+  },
+  let_us_walk: {
+    name: "مبادرة هيا نمشي", loc: "المضمار الرياضي ومحيط المدرسة",
+    target: "الطلاب والمعلمون وأولياء الأمور", count: "مشاركة رياضية مجتمعية حافلة", date: "1447/08/05هـ",
+    o1: "نشر ثقافة المشي كرياضة سهلة ومتاحة تعزز الصحة العامة والوقاية من الأمراض بوعي.",
+    o2: "تشجيع منسوبي المدرسة والطلاب على تبني نمط حياة صحي وحركي نشيط ومستدام وممتع.",
+    o3: "تعزيز التواصل الاجتماعي الفعال وتعميق الروابط بين المعلمين, الطلاب, وأولياء الأمور بالميدان.",
+    o4: "التوعية بأهمية ممارسة الرياضة في تقليل التوتر والضغط النفسي وتحسين التحصيل الدراسي والأكاديمي.",
+    o5: "تفعيل استغلال الساحات والمضامير المدرسية في برامج حركية مجتمعية هادفة ومنظمة.",
+    o6: "دعم المستهدفات الوطنية للصحة العامة وجودة الحياة تماشياً مع رؤية المملكة المتميزة 2030.",
+    a1: "تنظيم مسيرة المشي الجماعية الكبرى في محيط المدرسة بمشاركة الإدارة والطلاب وأولياء الأمور.",
+    a2: "تقديم نصائح وإرشادات إذاعية وصحية حول الطريقة الصحيحة للمشي والفوائد الطبية الجمة له.",
+    a3: "توزيع منشورات رقمية ومطويات توعوية حول حساب الخطوات اليومية والوصول للمستهدف الصحي بوعي.",
+    a4: "تحدي (أكثر من 10 آلاف خطوة) وتحفيز وتكريم الطلاب الذين يحققون أعلى معدل مشي خلال أسبوع."
+  },
+  blessed_morning: {
+    name: "مبادرة بوركت لأمتي في بكورها", loc: "ساحة وفصول المدرسة",
+    target: "جميع الطلاب ومنسوبي المدرسة", count: "انضباط وجودة أداء عالية", date: "1447/02/08هـ",
+    o1: "ترسيخ قيمة الانضباط المدرسي والحضور المبكر والاستفادة القصوى من الطابور والوقت.",
+    o2: "استثمار الوقت الصباحي الباكر في برامج تعليمية, ثقافية, ورياضية تنشط العقول والجسد.",
+    o3: "توعية الطلاب بأهمية النوم المبكر والاستيقاظ الباكر وأثرهما البالغ على الصحة والتركيز الدقيق.",
+    o4: "الحد من ظاهرة التأخر الصباحي والغياب وبناء سلوك الالتزام والمسؤولية الشخصية والتربوية.",
+    o5: "خلق بداية يوم دراسي مفعمة بالحيوية, الإيجابية, والتفاؤل بين منسوبي البيئة التعليمية الفاعلة.",
+    o6: "تفعيل دور الأسرة في المتابعة الجادة وتنظيم وقت الأبناء لدعم مسيرتهم التعليمية المتميزة.",
+    a1: "تفعيل فقرات إذاعية صباحية مبتكرة ومتنوعة (قصص ملهمة, تحديات ذهنية سريعة, مسابقات فورية).",
+    a2: "تنفيذ تمارين إحماء رياضية حركية ومنشطة لجميع الطلاب فور بدء الطابور الصباحي بانتظام.",
+    a3: "إطلاق مسابقة (الفصل المنضبط صباحاً) وتكريم الفصول الحاصلة على نسبة حضور مبكر كاملة وأسبوعية.",
+    a4: "تكريم خاص وفوري للطلاب الأوائل حضوراً عند بوابات المدرسة بشواهد وجوائز تشجيعية محفزة بوعي."
+  },
+  hour_of_code: {
+    name: "ساعة برمجة", loc: "معمل الحاسب الآلي والمنصات الرقمية",
+    target: "كافة الطلاب المهتمين بالتقنية والبرمجة", count: "مستكشفو لغات البرمجة", date: "1447/03/20هـ",
+    o1: "نشر ثقافة علوم الحاسب والبرمجة بين الطلاب وتفكيك العقد والصعوبات حولها بوعي.",
+    o2: "تنمية مهارات التفكير المنطقي, حل المشكلات, والتفكير الابتكاري من خلال لغات البرمجة الحديثة.",
+    o3: "تمكين الطلاب من مبادئ البرمجة الأساسية عبر تحديات تفاعلية وألعاب ذكية ممتعة ومشوقة.",
+    o4: "مواكبة المستهدفات والتوجهات العالمية والوطنية في بناء القدرات والمهارات الرقمية الفاعلة للأجيال.",
+    o5: "اكتشاف الطلاب الموهوبين في مجالات البرمجة وتطوير البرمجيات ورعايتهم بشكل علمي متميز.",
+    o6: "تعزيز استخدام التكنولوجيا كأداة للإنتاج والابتكار والتطوير وليس للاستهلاك السلبي فقط بوعي.",
+    a1: "تسجيل الطلاب في المنصة العالمية (Hour of Code) وتوجيههم لخوض التحديات والبرامج البرمجية.",
+    a2: "ورشة عمل تطبيقية وعملية مكثفة لشرح أساسيات البرمجة الرسومية (بلوكات) ولغات مثل بايثون.",
+    a3: "تحدي برمجى تنافسي بين الطلاب لإنجاز مهمة برمجية محددة أو تصميم لعبة بسيطة وآمنة ومتميزة.",
+    a4: "حفل توزيع شهادات إتمام (ساعة برمجة) المعتمدة عالمياً ومحلياً على الطلاب المشاركين بنجاح تام."
+  },
+  reading_for_all: {
+    name: "القراءة للجميع", loc: "مركز مصادر التعلم وحقيبة القراءة",
+    target: "جميع طلاب المدرسة بجميع المراحل", count: "مجتمع مدرسي قارئ ومثقف", date: "1447/04/05هـ",
+    o1: "تنمية شغف وعادة القراءة والمطالعة المستدامة لدى الطلاب وجعلها جزءاً من نمط حياتهم اليومي.",
+    o2: "توسيع الآفاق المعرفية والثقافية واللغوية للطلاب وتحسين مستويات التعبير والإلقاء والكتابة الأدبية.",
+    o3: "تفعيل واستغلال دور مكتبة المدرسة ومركز مصادر التعلم كمركز حيوي وجاذب لتلقي العلوم والمعرفة بوعي.",
+    o4: "تدريب الطلاب على مهارات التلخيص, النقد البناء, واستخراج الفوائد الكبرى من الكتب والمؤلفات الراسخة.",
+    o5: "رعاية الطلاب الموهوبين في القراءة وتأهيلهم للمسابقات المحلية والوطنية الكبرى بكل ثقة وتميز.",
+    o6: "بناء شخصية طالب واعية, مثقفة, قادرة على الفهم والتحليل والحوار الهادف والمنظم في شتى المعارف.",
+    a1: "تأسيس مبادرة (حصة القراءة الحرة) الدورية بالتعاون مع معلمي اللغة العربية لزيارة مصادر التعلم بانتظام.",
+    a2: "إطلاق مشروع (الحقيبة القرائية المتنقلة) بين الفصول الدراسية لتسهيل استعارة وتداول الكتب الثقافية والتربوية.",
+    a3: "مسابقة (ملخص كتاب) الأسبوعية حيث يرفع الطالب تلخيصاً متميزاً لكتاب قرأه ويناقشه بذكاء.",
+    a4: "تأسيس نادي القراءة الطلابي لإقامة جلسات نقاش وحوار دورية ومفتوحة حول كتب تاريخية وعلمية وقيمية."
+  },
+  nebras: {
+    name: "نبراس (التوعية من المخدرات)", loc: "المسرح المدرسي والقاعة الكبرى",
+    target: "طلاب المرحلة المتوسطة والثانوية المعلمين", count: "تحصين ووعي وقائي كامل", date: "1447/07/15هـ",
+    o1: "رفع مستوى الوعي الوقائي لدى الطلاب بأضرار ومخاطر المخدرات والمؤثرات العقلية على الصحة والنفس بوعي.",
+    o2: "تحصين عقول الطلاب والمجتمع المدرسي ضد السموم والمروجين وحمايتهم تربوياً وفكرياً وسلوكياً.",
+    o3: "إبراز دور المواطنة الصالحة والمسؤولية الفردية في الإبلاغ والتعاون مع الجهات الأمنية المعتمدة والمختصة.",
+    o4: "تنمية مهارات الرفض والمواجهة وضغط الأقران لدى الطلاب لقول (لا) للممارسات والسلوكيات الخاطئة والمشبوهة.",
+    o5: "تعزيز التواصل الفعال والتكامل بين المدرسة والأسرة والمشروع الوطني للوقاية من المخدرات بوعي ونضج.",
+    o6: "بناء بيئة تعليمية تربوية آمنة, محمية, وصحية تضمن السلامة الكاملة لجميع منسوبي الصرح التعليمي المتميز.",
+    a1: "محاضرة توعوية وإرشادية كبرى بالتعاون مع مكافحة المخدرات لاستعراض المخاطر وآليات الحماية والوقاية والنظام.",
+    a2: "معرض توعوي مصور ومتحرك داخل المدرسة يضم لوحات, مجسمات, ومنشورات توضح الآثار المدمرة للمؤثرات العقلية.",
+    a3: "بث ومضات إرشادية ورسائل وقائية رقمية مكثفة ومصممة بعناية لأولياء الأمور لتعزيز المتابعة الأسرية الواعية.",
+    a4: "إطلاق مسابقة (وعي نبراس) لأأفضل لوحة تعبيرية, مقال تحذيري, أو رسالة توعوية يشارك بصياغتها الطلاب بتميز."
+  },
+  takamul: {
+    name: "تكامل (تعزيز السلوك الإيجابي)", loc: "الفصول الدراسية وساحات المدرسة",
+    target: "جميع فئات الطلاب بالمدرسة منسوبيها", count: "منظومة سلوكية متكاملة ومحفزة", date: "1447/03/10هـ",
+    o1: "ترسيخ وتعزيز السلوكيات والممارسات الإيجابية في البيئة المدرسية وجعلها نمط تعامل يومي معتمد بوعي.",
+    o2: "حد وخفض الممارسات السلوكية السلبية والعدوانية وتطوير البدائل التوجيهية والتربوية الحكيمة والمؤثرة.",
+    o3: "تنمية روح الانضباط الذاتي, المسؤولية الشخصية, والالتزام بالقواعد والأنظمة واللوائح المدرسية بتميز.",
+    o4: "رصد, إبراز, وتكريم النماذج السلوكية المتميزة والخلوقة ليكونوا قدوة صالحة يحتذى بها بين الأقران.",
+    o5: "خلق مناخ تعليمي وتربوي آمن, محفز, وإيجابي يدعم التميز الدراسي والنمو النفسي السليم لكافة الطلاب.",
+    o6: "تفعيل أدوار المدرسة الشاملة (معلمين, إداريين, توجيه طلابي, أسرة) في منظومة رعاية وبناء السلوك بوعي.",
+    a1: "إطلاق حملة (سلوكي عنوان تميزي) التوعوية والمكثفة في الإذاعة المدرسية وشاشات العرض والوسائط الرقمية بانتظام.",
+    a2: "تطبيق نظام (بطاقات التعزيز الإيجابي الفوري) الممنوحة من المعلمين للطلاب المنضبطين والمتميزين داخل الصفوف.",
+    a3: "عقد ورش عمل وجلسات حوارية دورية يقودها الموجه الطلابي لمناقشة قيم الانضباط, الاحترام, والتعاون البناء.",
+    a4: "الاحتفاء بـ (أسبوع تكامُل السلوكي) لتكريم فرسان السلوك الإيجابي, الطلاب المثاليين, والفصول المتميزة بالانضباط الشامل."
+  },
+  chem_week: {
+    name: "أسبوع الكيمياء", loc: "المختبر العلمي / الساحة",
+    target: "طلاب المسار العلمي والموهوبين", count: "تفاعل علمي واسع", date: "1447/03/28هـ",
+    o1: "إبراز أهمية علم الكيمياء ودوره المحوري في التطبيقات الصناعية والحياتية.",
+    o2: "تنمية مهارات البحث والتقصي العلمي والتفكير الإبداعي لدى الطلاب.",
+    o3: "تحفيز الطلاب على الابتكار وتطوير التجارب العلمية بشكل آمن ومشوق.",
+    o4: "نشر الثقافة العلمية وتبسيط مفاهيم الكيمياء لغير المتخصصين بالمدرسة.",
+    o5: "ربط المناهج الدراسية بالتطبيقات العملية الميدانية لزيادة كفاءة التعلم.",
+    o6: "اكتشاف ورعاية الطلاب الموهوبين والمتميزين في مجالات العلوم والابتكار.",
+    a1: "إقامة معرض (الكيمياء المشوقة) للتجارب التفاعلية العجيبية والآمنة.",
+    a2: "تنفيذ مسابقة لأفضل مجسم أو وسيلة تعليمية تشرح الروابط والجدول الدوري.",
+    a3: "تنظيم ورشة عمل تدريبية حول الأمن السلامة داخل المختبرات المدرسية.",
+    a4: "استعراض مساهمات علماء المسلمين في الكيمياء وتأثيرها على الحضارة الحديثة."
+  },
+  founding_day: {
+    name: "يوم التأسيس السعودي", loc: "الساحة العامة والقرية التراثية للمدرسة",
+    target: "جميع الطلاب والمعلمين وأولياء الأمور", count: "كرنفال وطني واعتزاز تاريخي كامل", date: "1447/07/30هـ",
+    o1: "الاعتزاز بالجذور التاريخية العريقة والدولة السعودية الممتدة لثلاثة قرون كاملة بوعي وفخر.",
+    o2: "ترسيخ قيم الانتماء الصادق والولاء والمواطنة الصالحة في نفوس وعقول أجيال الطلاب بالمدرسة.",
+    o3: "تعريف الطلاب بمراحل كفاح الأئمة والملوك في بناء واستقرار وأمن هذا الوطن الغالي والمعطاء.",
+    o4: "إبراز الموروث الثقافي الأصيل, الأزياء التراثية, والعمق الحضاري الفريد لكافة مناطق المملكة.",
+    o5: "تعزيز الفخر بالمنجزات التنموية الشاملة والتحول الحضاري الهائل والريادة العالمية الحالية والمستقبلية.",
+    o6: "إشراك الأسر والمجتمع المحلي في تلاحم بهيج يحتفي بالتاريخ والوفاء للقيادة الرشيدة والوطن الشامخ.",
+    a1: "إقامة احتفالية كبرى ومهرجان تراثي وثقافي يضم أركاناً شعبية, عروضاً أدبية, وقصائد وطنية ملهمة في الساحة.",
+    a2: "تأسيس المعرض المصور (يوم بدينا) لعرض لوحات وتاريخ الأئمة والملوك ومسيرة المجد والبطولات التاريخية العريقة.",
+    a3: "إطلاق مسابقة (أفضل زي تراثي) ومسابقات ثقافية وتنافسية حول تاريخ التأسيس وعمق الهوية السعودية الأصيلة بتميز.",
+    a4: "تصميم ونشر جدارية فنية إلكترونية ومقاطع فيديو توعوية وتاريخية من إنتاج الطلاب لبثها عبر شاشات ومجموعات التواصل."
+  },
+  reading_challenge: {
+    name: "مسابقة تحدي القراءة", loc: "مركز مصادر التعلم وحقيبة التحدي",
+    target: "الطلاب المهتمين والموهوبين بالقراءة", count: "فرسان وتحدي القراءة العربي", date: "1447/05/08هـ",
+    o1: "إحياء وإذكاء روح التنافس العلمي والمعرفي الشريف بين الطلاب في مجالات المطالعة والقراءة بوعي ونضج.",
+    o2: "تمكين الطلاب من مهارات القراءة المستدامة, التلخيص الدقيق, الفهم العميق, والنقد البناء للأفكار والمؤلفات.",
+    o3: "توسيع المدارك, إثراء المخزون اللغوي والأدبي, وتحسين جودة التحدث والخطابة والفصاحة لدى المشاركين بالمسابقة.",
+    o4: "أرشفة وتأهيل الطلاب المتميزين لخوض غمار منافسات مسابقة (تحدي القراءة العربي) وتحقيق مراكز متقدمة بوعي.",
+    o5: "تحويل القراءة من نشاط عابر إلى ممارسة وسلوك يومي مستدام يبني شخصية الطالب المثقف والواعي والمتميز.",
+    o6: "تفعيل التكامل المعرفي بين مكتبة المدرسة, المعلمين, وأولياء الأمور لدعم وتحفيز فرسان التحدي بكل السبل المتاحة.",
+    a1: "التسجيل الشامل للطلاب في مسابقة التحدي وتوزيع (جوازات القراءة) المعتمدة لبدء تدوين وتلخيص الكتب المقروءة.",
+    a2: "عقد ورش عمل تدريبية وإرشادية مكثفة حول (مهارات تلخيص الكتب, صياغة الأفكار الكبرى, وفنون المناقشة والحوار).",
+    a3: "إجراء تصفيات ومقابلات دورية ومحاكية داخل المدرسة لتقييم أداء الطلاب ومراجعة جوازات القراءة وتوجيههم وتطويرهم.",
+    a4: "الاحتفاء بالحفل الختامي للمسابقة لتكريم الطلاب الذين أتموا قراءة وتلخيص 50 كتاباً وتتويج فارس التحدي بالمدرسة."
+  },
+  cultural_contest: {
+    name: "مسابقة ثقافية", loc: "المسرح المدرسي / القاعات الذكية",
+    target: "جميع مراحل وطلاب المدرسة", count: "منافسات معرفية حافلة", date: "1447/04/18هـ",
+    o1: "إثراء الحصيلة المعرفية والمعلوماتية العامة لدى الطلاب في شتى العلوم, التاريخ, الآداب, والثقافة بوعي.",
+    o2: "تنمية روح التنافس الشريف والعمل الجماعي والتعاون والانسجام بين الفرق الطلابية التنافسية بالمدرسة.",
+    o3: "اكتشاف الطلاب المتميزين بأصحاب الثقافة العالية والذكاء السريع ورعايتهم وإدراجهم في نوادي التميز المعرفي.",
+    o4: "بث الحيوية, المتعة التعليمية, والتشويق داخل البيئة المدرسية عبر كسر جمود المناهج بالأنشطة الثقافية المشوقة.",
+    o5: "تطوير مهارات البحث الذاتي, سرعة البديهة, والتحليل المنطقي لدى الطلاب من خلال حل الأسئلة والتحديات المتنوعة.",
+    o6: "ربط الطلاب بالهوية الوطنية والتاريخ الإسلامي والمعارف الكبرى من خلال تصميم محتوى الأسئلة الهادفة والراسخة.",
+    a1: "تنظيم مسابقة الفرسان الثقافية الكبرى بين الفصول والمراحل بنظام خروج المغلوب وسط حضور ومؤازرة طلابية واسعة.",
+    a2: "تفعيل مسابقة (سؤال وجواب) المعرفية والفورية عبر الإذاعة المدرسية طوال أسبوع وتوزيع جوائز فورية وقيمة بوعي.",
+    a3: "تصميم وتطبيق مسابقة ثقافية رقمية تفاعلية باستخدام تطبيقات وأدوات ذكية يشارك بها الطلاب عبر الأجهزة اللوحية.",
+    a4: "إقامة الحفل الختامي للمسابقة الثقافية لتتويج الفريق الفائز بلقب (فارس المعرفة والمدرسة) وتوزيع الدروع والجوائز الهادفة."
+  },
+  david_psalms: {
+    name: "مسابقة مزامير داوود", loc: "مصلى المدرسة والمسرح الكبرى",
+    target: "الطلاب أصحاب الأصوات الندية بحفظ القرآن", count: "أصوات ندية وتنافس إيماني", date: "1447/08/15هـ",
+    o1: "رعاية وإبراز المواهب الطلابية المتميزة في حسن الصوت وتجويد وتلاوة كتاب الله الكريم بوعي وإجلال تام.",
+    o2: "تشجيع الطلاب على إتقان أحكام التجويد والترتيل ومحاكاة كبار القراء في العالم الإسلامي بتميز وإتقان سلوكي.",
+    o3: "ربط قلوب الطلاب وعقولهم بالقرآن العظيم وجعله ربيع قلوبهم ونور صدورهم ومنهج حياتهم الأخلاقي واليومي الراسخ.",
+    o4: "بث الروحانية والسكينة والوقار داخل المجتمع التعليمي والمدرسي عبر الاستماع للتلاوات القرآنية الخاشعة والمتميزة.",
+    o5: "تأهيل الطلاب وتدريبهم للمشاركة الفاعلة والمشرفة في مسابقات الحفظ والتلاوة الرسمية على مستوى الإدارة والوزارة.",
+    o6: "تكريم أهل القرآن وأصحاب الأصوات الندية وبث روح الفخر والاعتزاز والتميز بين الطلاب وأولياء أمورهم بالمنظومة.",
+    a1: "إطلاق الإعلان الرسمي للمسابقة وشروطها وآليات التسجيل وفرز اللجان المشرفة من معلمي التربية الإسلامية المتميزين.",
+    a2: "إجراء التصفيات الأولية للمسابقة في مصلى المدرسة لفرز وتقييم التلاوات وفق معايير التجويد, الأداء, وحسن الصوت بوعي.",
+    a3: "تخصيص منبر الإذاعة المدرسية اليومي لافتتاح الفقرات بتلاوات عطرة وندية من الطلاب المتأهلين للمراحل النهائية بالمسابقة.",
+    a4: "تنظيم الحفل الختامي للمسابقة (ليلة القرآن) بحضور أولياء الأمور لتتويج الحاصلين على لقب (مزمار المدرسة) وتوزيع الجوائز."
+  },
+  teachers_day: {
+    name: "يوم المعلم العالمي", loc: "ساحة وفصول المدرسة والمسرح الكبرى",
+    target: "كافة الهيئة التعليمية والطلاب", count: "وفاء وتقدير شامل لكافة المعلمين", date: "1447/03/13هـ",
+    o1: "إبراز المكانة التربوية والاجتماعية الكبرى للمعلم ودوره المحوري في بناء العقول وصناعة الأجيال القادمة والوطن بوعي.",
+    o2: "غرس وتنمية قيم التقدير, الاحترام, والوفاء في نفوس الطلاب تجاه معلميهم ومربيهم الأجلاء داخل وخارج المدرسة.",
+    o3: "تعزيز الرضا الوظيفي والروح المعنوية والإيجابية للهيئة التعليمية وبث مشاعر الفخر برسالتهم السامية والمقدسة بتميز.",
+    o4: "تفعيل دور الطلاب الإيجابي والمبادر في التعبير عن شكرهم وامتنانهم لمعلميهم بطرق تربوية وفنية وإبداعية راقية ومتناسقة.",
+    o5: "توثيق روابط التعاون والاحترام المتبادل بين إدارة المدرسة, الطلاب, أولياء الأمور, والمعلمين لدعم مسيرة النجاح والتفوق.",
+    o6: "مواكبة التوجهات الوطنية والوزارية في الاحتفاء بالمعلم وتقدير منجزاته وعطائه المستمر والمستدام في الميدان التعليمي.",
+    a1: "تنظيم حفل خطابي وثقافي متكامل للاحتفاء بالمعلمين يتضمن كلمات إشادة من الإدارة وقصائد شعرية معبرة يلقيها الطلاب بتميز.",
+    a2: "إطلاق مبادرة (بطاقة شكر لمعلمي) حيث يكتب كل طالب رسالة امتنان صادقة ويسلمها لمعلمه داخل الصف الدراسي بوعي واحترام.",
+    a3: "تخصيص فقرات الإذاعة المدرسية بالكامل للحديث عن فضل العلم والمعلم واستعراض مآثر المعلمين المتميزين وتأثيرهم البالغ بالحياة.",
+    a4: "تقديم دروع تذكارية, هدايا عينية, وشهادات شكر وتقدير من إدارة المدرسة والطلاب لكافة معلمي المدرسة في تلاحم تربوي بهيج."
+  },
+  ibda_olympiad: {
+    name: "الأولمبياد الوطني إبداع", loc: "المختبر العلمي الذكي",
+    target: "الموهوبون في البحث العلمي والابتكار", count: "رواد الاختراع والابتكار", date: "1447/05/12هـ",
+    o1: "نشر ثقافة البحث العلمي والابتكار والابتكار الأصيل في أوساط البيئة الطلابية.",
+    o2: "تطوير مهارات التفكير الناقد وحل المشكلات بأساليب علمية ومنهجية رصينة.",
+    o3: "تأهيل الطلاب للمنافسة المشرفة في أولمبياد إبداع على مستوى المملكة.",
+    o4: "توفير الدعم المعرفي والتقني لتطوير مشاريع الطلاب الابتكارية.",
+    o5: "ربط المشاريع البحثية المتميزة باحتياجات التنمية ورؤية 2030.",
+    o6: "إكساب الطلاب مهارات العرض والإلقاء والدفاع عن أفكارهم العلمية.",
+    a1: "إقامة ورشة عمل تدريبية بعنوان (خطوات البحث العلمي وتوليد الأفكار الإبداعية).",
+    a2: "جلسات تحكيم أولية واستشارية لمشاريع الطلاب بواسطة معلمين متخصصين.",
+    a3: "تسجيل مشاريع الطلاب المبتكرة بشكل رسمي في منصة موهبة المعتمدة.",
+    a4: "تنظيم معرض داخلي (إبداع مدرسة جابر بن حيان) للاحتفاء بابتكارات الطلاب."
+  },
+  first_aid_day: {
+    name: "اليوم العالمي للإسعافات الأولية", loc: "الصالة الثقافية بالمدرسة",
+    target: "الطلاب والهيئة التعليمية والإدارية", count: "ثقافة صحية لإنقاذ الحياة", date: "1447/02/18هـ",
+    o1: "نشر ثقافة الوعي الإسعافي وأهمية التدخل السريع في الحالات الطارئة.",
+    o2: "تدريب منسوبي المدرسة على المهارات الأساسية للإسعافات الأولية بكفاءة.",
+    o3: "الحد من مضاعفات الحوادث المدرسية واليومية الشائعة عبر التوعية السليمة.",
+    o4: "تعزيز قيم التعاون والمسؤولية المجتمعية والنجدة في نفوس الناشئة.",
+    o5: "تأمين بيئة مدرسية صحية وخالية من المخاطر عبر الفهم الوقائي المشترك.",
+    o6: "شرح بروتوكولات التعامل مع حالات الاختناق, النزيف, والكسور والإغماء.",
+    a1: "استضافة مسعفين متخصصين لتقديم دورة عملية حول الإنقاذ والإنعاش الرئوي (CPR).",
+    a2: "تطبيق تجارب ومحاكاة عملية للطلاب حول كيفية التعامل مع الجروح والكسور.",
+    a3: "فحص وتحديث صناديق الإسعافات الأولية في الفصول ومرافق المدرسة الفاعلة.",
+    a4: "توزيع منشورات رقمية وإرشادية تلخص أرقام الطوارئ والخطوات الأساسية للإسعاف."
+  },
+  life_skills: {
+    name: "المهارات الحياتية", loc: "قاعة التدريب والأنشطة",
+    target: "جميع فئات الطلاب بالمدرسة", count: "بناء شخصية قيادية مستقلة", date: "1447/03/22هـ",
+    o1: "تمكين الطلاب من مهارات الاعتماد على النفس والتعامل مع تحديات الحياة اليومية.",
+    o2: "تنمية مهارات التفكير الإيجابي, حل المشكلات, واتخاذ القرارات الواعية.",
+    o3: "تطوير مهارات التواصل الفعال, القيادة, والعمل الجماعي التكاملي السلس.",
+    o4: "تدريب الطلاب على التخطيط الشخصي الصائب, إدارة الوقت, ووضع الأهداف.",
+    o5: "غرس قيم التوازن المالي, ثقافة الاستهلاك الرشيد, والوعي بالمسؤولية الشخصية.",
+    o6: "تأهيل جيل قادر على التكيف الإيجابي والإنتاجية المثمرة في المجتمع المحلي.",
+    a1: "ورشة عمل تدريبية وتفاعلية بعنوان (مهارات إدارة الوقت وترتيب الأولويات للدراسة).",
+    a2: "جلسات محاكاة عملية وعصف ذهني حول طرق حل النزاعات بطرق ودية وذكية.",
+    a3: "إطلاق مبادرة (الوعي المالي الذكي) لشرح أساسيات الادخار الذكي والميزانية.",
+    a4: "مسابقة (مخطط مستقبلي المتميز) لأفضل خطة شخصية يضعها الطالب لأهدافه."
+  },
+  intellectual_awareness: {
+    name: "الوعي الفكري", loc: "مركز مصادر التعلم والمسرح المدرسي",
+    target: "جميع الطلاب وأولياء الأمور", count: "عقول محصنة ووعي وطني", date: "1447/04/10هـ",
+    o1: "تعزيز قيم الوسطية, الاعتدال, والتسامح الديني والوطني في نفوس الطلاب.",
+    o2: "تحصين عقول الناشئة ضد الأفكار المنحرفة والدعوات المضللة والتيارات الهدامة.",
+    o3: "تنمية مهارات التفكير الناقد والتحليل الذاتي لفرز المحتوى الرقمي والإعلامي.",
+    o4: "ترسيخ قيم الانتماء الصادق والولاء والمواطنة الفاعلة للمليك والوطن الشامخ.",
+    o5: "التوعية بمخاطر الشائعات وكيفية التحقق الموثوق من المصادر الرسمية للدولة.",
+    o6: "بناء شخصية واعية تعتز بهويتها السعودية والإسلامية العريقة بكل فخر.",
+    a1: "ندوة حوارية كبرى بعنوان (أمننا الفكري ركيزة استقرارنا وولائنا الوطني والشرعي).",
+    a2: "مسابقة لكتابة المقال التوعوي لتعزيز قيم الاعتدال والمواطنة الصالحة المتزنة.",
+    a3: "بث رسائل ومقاطع مرئية توعوية عبر الشاشات المدرسية حول الاستخدام الرقمي الآمن.",
+    a4: "لقاء إرشادي مفتوح يجمع الموجه الطلابي والطلاب لمناقشة قيم الحوار البناء."
+  },
+  quran_contest: {
+    name: "مسابقة حفظ القرآن الكريم", loc: "مصلى المدرسة الرئيسي",
+    target: "كافة مستويات وطلاب المدرسة", count: "تنافس إيماني مبارك وفي رحاب القرآن", date: "1447/08/20هـ",
+    o1: "ربط قلوب الطلاب وعقولهم بكتاب الله تعالى تلاوةً وحفظاً وتدبراً وسلوكاً.",
+    o2: "تشجيع التنافس الشريف والإيماني المبارك بين الطلاب في ميادين القرآن العظيم.",
+    o3: "إتقان أحكام التجويد والترتيل وتطوير الأداء الصوتي الندي لدى الحفاظ.",
+    o4: "تكريم أهل القرآن وبث روح الفخر والاعتزاز بين الطلاب وأولياء أمورهم.",
+    o5: "تأهيل الطلاب المتميزين لتمثيل المدرسة في مسابقات التحفيظ الرسمية بالمنطقة.",
+    o6: "غرس الأخلاق القرآنية السامية في الممارسات والتعاملات اليومية للطلاب.",
+    a1: "تشكيل لجان التحكيم والفرز من معلمي التربية الإسلامية وفق فروع الحفظ المعتمدة.",
+    a2: "إجراء التصفيات الأولية بانتظام داخل مصلى المدرسة لتقييم الحفظ والاتقان.",
+    a3: "تخصيص الإذاعة المدرسية لبث نماذج من تلاوات الطلاب المتميزين تشجيعاً لهم.",
+    a4: "حفل وفير (ليلة النور) بحضور الإدارة والأسرة لتوزيع الجوائز والمكافآت للحفاظ."
+  },
+  plant_it: {
+    name: "مبادرة نغرسها لننعم بها (بيئة)", loc: "الحدائق المحيطة والساحة الخارجية للبيئة المدرسية",
+    target: "جماعة النشاط البيئي وطلاب المدرسة", count: "مستقبل أخضر ومستدام", date: "1447/03/19هـ",
+    o1: "نشر الوعي البيئي وزيادة المساحات الخضراء تحقيقاً لمستهدفات السعودية الخضراء.",
+    o2: "غرس قيم المسؤولية والاهتمام بالبيئة المحيطة والمحافظة على المظهر الجمالي بوعي.",
+    o3: "تعريف الطلاب بالطرق الصحيحة للزراعة ورعاية النباتات ومكافحة التصحر.",
+    o4: "تحسين جودة الهواء وتوفير بيئة مدرسية صحية ومبهجة تدعم التحصيل الدراسي.",
+    o5: "تفعيل العمل التطوعي الميداني للطلاب في مجالات رعاية البيئة والاستدامة.",
+    o6: "ترشيد استخدام المياه في الري عبر تطبيق تقنيات السقاية الذكية والمنظمة.",
+    a1: "حملة تشجير ميدانية كبرى لغرس شتلات زراعية في أفنية ومحيط أسوار المدرسة.",
+    a2: "ورشة عمل تفاعلية لشرح طرق العناية بنباتات الزينة ونباتات الظل والري الرشيد.",
+    a3: "توزيع بطاقات إرشادية (أثرك أخضر) لحث الطلاب على المحافظة على المزروعات والبيئة.",
+    a4: "تكريم الفصل أو المجموعة الأكثر تميزاً في رعاية الحديقة المدرسية المخصصة لها."
+  },
+  indiv_differences_workshop: {
+    name: "ورشة عمل التعامل مع الفروق الفردية", loc: "قاعة التطوير المهني التعليمي",
+    target: "الهيئة التعليمية والمعلمون بالمدرسة", count: "تمهن وجودة أداء تدريسي عالي", date: "1447/02/26هـ",
+    o1: "تزويد المعلمين بالمهارات الاستراتيجية اللازمة لرصد وتصنيف الفروق الفردية للطلاب.",
+    o2: "تنويع التدريس وتصميم أنشطة صفية تتناسب مع مستويات وأنماط التعلم المختلفة.",
+    o3: "رفع كفاءة نواتج التعلم ومساعدة الطلاب دون المتوسط على معالجة فجواتهم المعرفية.",
+    o4: "رعاية الطلاب المتفوقين والموهوبين وتحدي قدراتهم بأنشطة إثرائية نوعية ومتميزة.",
+    o5: "توفير بيئة صفية عادلة ومحفزة تضمن تكافؤ الفرص لجميع مستويات الطلاب.",
+    o6: "تبادل الخبرات والممارسات التدريسية الناجحة بين أعضاء التخصصات التعليمية.",
+    a1: "تقديم عرض تدريبي متكامل حول (نظريات الذكاءات المتعددة وتطبيقاتها داخل الصف).",
+    a2: "ورشة عمل تطبيقية ومجموعات تركيز لتصميم نماذج أوراق عمل متدرجة الصعوبة الكفاءة.",
+    a3: "تحليل عينات من نتائج الطلاب لوضع خطط علاجية وإثرائية مستهدفة ودقيقة.",
+    a4: "إعداد دليل استرشادي مصغر يحوي استراتيجيات التعليم المتمايز لتداوله بين المعلمين."
+  },
+  activity_design_workshop: {
+    name: "ورشة عمل تصميم الأنشطة", loc: "قاعة مصادر التعلم والتدريب",
+    target: "المعلمون ورواد وجماعات الأنشطة الطلابية", count: "ابتكار وجودة برامج نشاط", date: "1447/03/14هـ",
+    o1: "تطوير قدرات المعلمين في بناء وتصميم أنشطة لا صفية هادفة ومشوقة وجاذبة.",
+    o2: "ربط الأنشطة الطلابية بمستهدفات المناهج الدراسية والقيم التربوية الكبرى.",
+    o3: "تنمية مهارات التفكير الابتكاري وتوظيف التقنيات الحديثة في تفعيل البرامج بوعي.",
+    o4: "صياغة مؤشرات أداء دقيقة وواضحة لقياس مدى نجاح وتأثير برامج النشاط المنفذة.",
+    o5: "تنويع قوالب الأنشطة (ثقافية, رياضية, علمية, تقنية) لتلبية ميول كافة الطلاب.",
+    o6: "استثمار ميزانيات وموارد المدرسة بفعالية لتصميم برامج ذات أثر تعليمي مستدام.",
+    a1: "حلقة نقاش تفاعلية لعصف ذهني واقتراح برامج نشاط مبتكرة وغير تقليدية للموسم الدراسي.",
+    a2: "تدريب عملي على تعبئة مصفوفات بناء الأنشطة (أهداف, فئات, أدوار, شواهد توثيق).",
+    a3: "استعراض ومناقشة نماذج وتجارب ملهمة لأنشطة مدرسية متميزة حققت جوائز وزارية.",
+    a4: "إنشاء بنك رقمي مشترك يضم كافة الخطط والأفكار المصممة ليسهل استخدامها مستقبلاً."
+  },
+  self_evaluation_workshop: {
+    name: "ورشة عمل التقويم الذاتي", loc: "قاعة الجودة والتميز والاجتماعات",
+    target: "لجنة التميز والجودة والهيئة التعليمية والإدارية", count: "تطوير مؤسسي مستمر وجودة مستدامة", date: "1447/04/05هـ",
+    o1: "نشر ثقافة التقويم الذاتي كأداة أساسية للتطوير المؤسسي المستمر بالمدرسة.",
+    o2: "تدريب منسوبي المدرسة على معايير ومؤشرات التقويم المعتمدة من هيئة تقويم التعليم.",
+    o3: "تحليل الواقع المدرسي بموضوعية وتحديد نقاط القوة وفرص التحسين المتاحة بكفاءة.",
+    o4: "بناء أدوات دقيقة (استبانات, بطاقات ملاحظة, مقابلات) لجمع البيانات والمؤشرات.",
+    o5: "إعداد تقرير التقويم الذاتي للمدرسة بشكل علمي ومنهجي مستند على الشواهد والأدلة.",
+    o6: "صياغة خطط التحسين المدرسية بناءً على مخرجات التقويم الذاتي لضمان التميز الشامل.",
+    a1: "شرح مفصل لمعايير التقويم الذاتي المدرسي (القيادة, التعليم, البيئة, النتائج) بالدليل.",
+    a2: "ورشة تطبيقية لتصميم وتحليل الاستبانات الإلكترونية الموجهة للطلاب وأولياء الأمور والمعلمين.",
+    a3: "مجموعات عمل لمراجعة وتدقيق شواهد وأدلة الأداء لكافة مجالات المنظومة التعليمية.",
+    a4: "تدشين لوحة مؤشرات رقمية تفاعلية تعكس مستويات الإنجاز والتقدم في معايير الجودة."
+  },
+  modern_evaluation_workshop: {
+    name: "ورشة عمل أسلوب التقويم الحديث", loc: "قاعة التطوير والتدريب بالمدرسة",
+    target: "المعلمون والمشرفون التربويون بالمدرسة", count: "تحديث أساليب قياس ونواتج التعلم كفاءة", date: "1447/04/22هـ",
+    o1: "تعريف المعلمين بأساليب وأدوات التقويم الحديثة والمتمركزة حول نواتج التعلم الفردية.",
+    o2: "الانتقال من التقويم التقليدي إلى التقويم الواقعي البديل (ملفات الإنجاز, بطاقات الأداء).",
+    o3: "صياغة وبناء أدوات تقييم موضوعية (قوائم الشطب, سلالم التقدير اللفظية Rubrics).",
+    o4: "توظيف التقنية والمنصات الرقمية في تصميم تقييمات تفاعلية وتكوينية سريعة وذكية.",
+    o5: "تحليل نتائج الاختبارات التشخيصية والمركزية بدقة لبناء خطط الدعم والمعالجة التربوية.",
+    o6: "تفعيل التغذية الراجعة الفعالة والموثوقة للطلاب لدعم مسيرتهم وتطوير نموهم المعرفي.",
+    a1: "جلسة تدريبية عملية ومكثفة لتصميم سلالم تقدير لفظية (Rubrics) لتقييم المشاريع والمهام.",
+    a2: "تطبيق عملي على استخدام برامج رقمية لبناء اختبارات تفاعلية قصيرة تعطي نتائج فورية.",
+    a3: "ورشة عمل مشتركة لتبادل ونقد نماذج من الاختبارات التحصيلية وتطوير صياغة الأسئلة السلوكية.",
+    a4: "إعداد نموذج موحد لملف الإنجاز الإلكتروني (e-Portfolio) لتطبيقه تجريبياً على فصول مستهدفة."
+  },
+  scientific_research_workshop: {
+    name: "ورشة عمل مهارات البحث العلمي", loc: "مركز مصادر التعلم والمكتبة الرقمية",
+    target: "طلاب المرحلة المتوسطة والثانوية المتميزين علمياً", count: "علماء وباحثو المستقبل الواعد", date: "1447/05/25هـ",
+    o1: "إكساب الطلاب المهارات والخطوات المنهجية الأساسية لإجراء البحث العلمي الرصين.",
+    o2: "تدريب الطلاب على صياغة مشكلة البحث, وضع الفروض, وتحديد الأهداف بوضوح دقيق.",
+    o3: "تنمية مهارات البحث والتقصي واستخدام قواعد البيانات والمكتبات الرقمية المعتمدة والموثوقة.",
+    o4: "تعليم الطلاب آليات توثيق المصادر والمراجع العلمية بدقة وبحسب الأنظمة الأكاديمية العريقة.",
+    o5: "تحفيز التفكير الناقد والتحليلي ومناقشة النتائج وصياغة التوصيات العلمية المبتكرة.",
+    o6: "تأهيل ودعم الطلاب المشاركين بالبرنامج لخوض المسابقات البحثية والعلمية الكبرى بثقة.",
+    a1: "دورة تدريبية مكثفة حول (منهجية البحث العلمي... من اختيار الفكرة حتى صياغة التقرير النهائي).",
+    a2: "تدريب عملي في معمل الحاسب على استخدام محركات البحث العلمي وتصفح منصة بنك المعرفة.",
+    a3: "ورشة تطبيقية ومجموعات عمل لصياغة خطة بحثية مصغرة واختيار أدوات جمع البيانات والمؤشرات.",
+    a4: "حلقة نقاش جماعية ودفاع يحاكي الأسلوب الأكاديمي لعرض وتفنيد المشاريع البحثية المقدمة من الطلاب."
+  },
+  psychological_guidance_course: {
+    name: "دورة تدريبية الإرشاد النفسي والتربوي", loc: "قاعة التوجيه والإرشاد الطلابي",
+    target: "المعلمون, الموجهون, والكادر الإداري", count: "استقرار نفسي وبيئة تربوية واعية وآمنة", date: "1447/03/18هـ",
+    o1: "تزويد المشاركين بمهارات وفنون الرصد المبكر للمشكلات النفسية والسلوكية للطلاب بوعي.",
+    o2: "تفعيل فنيات وأدوات الإرشاد التربوي والنفسي الحديثة في التعامل مع الحالات والنزاعات.",
+    o3: "بناء بيئة تعليمية تربوية آمنة, داعمة, ومحفزة تضمن الاستقرار النفسي الكامل لجميع الطلاب.",
+    o4: "تعزيز مهارات الإنصات الفعال, بناء الثقة, والتعاطف الإيجابي البناء مع مشكلات الناشئة.",
+    o5: "تطوير آليات التدخل السريع في حالات الأزمات السلوكية وضغوط الاختبارات والدراسة بكفاءة.",
+    o6: "تكامل الأدوار والاتصال التربوي بين المعلم والموجه والأسرة لمعالجة الحالات السلوكية المعقدة.",
+    a1: "تقديم محاضرات تدريبية مكثفة وشرح لحقائب إرشادية متخصصة حول خصائص النمو والمراهقة.",
+    a2: "تطبيقات وحالات عملية ومحاكاة لطرق دراسة الحالة وتصميم الخطط العلاجية السلوكية المعتمدة.",
+    a3: "ورشة عمل مشتركة لتفعيل (صندوق الدعم النفسي والسرّي) لرصد مقترحات ومخاوف واستشارات الطلاب.",
+    a4: "صياغة ميثاق تعامل قيمي وتربوي موحد لتعزيز الرفق وبناء بيئة صفية خالية من الضغوط والتوتر."
+  },
+  family_communication: {
+    name: "التواصل الفعال مع الأسرة", loc: "قاعة الاجتماعات الرئيسية / منصة مدرستي",
+    target: "المعلمون, الموجهون, وأولياء الأمور والأسر", count: "شراكة تربوية متينة ومستدامة بين البيت والمدرسة", date: "1447/03/05هـ",
+    o1: "بناء جسور تواصل وشراكة تربوية متينة ومستدامة بين الأسرة والمدرسة لدعم مسيرة الطالب.",
+    o2: "إشراك أولياء الأمور بوعي في متابعة التحصيل الدراسي والانضباط السلوكي للأبناء بانتظام.",
+    o3: "توظيف التقنيات الحديثة والمنصات الرقمية لتسهيل وتسريع عملية تبادل المعلومات والمؤشرات.",
+    o4: "توعية الأسرة بالأنظمة واللوائح المدرسية وآليات تقديم الدعم التربوي والنفسي السليم بالمنزل.",
+    o5: "عقد لقاءات دورية وتكاملية لمناقشة التحديات المشتركة ووضع حلول ناجعة لخدمة بيئة الطالب.",
+    o6: "تعزيز الرضا الكامل والثقة المتبادلة بين المجتمع المحلي والصرح التعليمي والتربوي المتميز.",
+    a1: "تنظيم (مجلس أولياء الأمور الدوري) لمناقشة خطط المدرسة ومستويات الطلاب وسبل التعاون والتميز.",
+    a2: "إرسال تقارير دورية, إلكترونية, وموجزة حول مستويات التحصيل والغياب والانضباط السلوكي للأسر بانتظام.",
+    a3: "تقديم ورشة عمل رقمية (عن بعد) لأولياء الأمور حول (طرق دعم الأبناء في الاستذكار والتعامل مع الاختبارات).",
+    a4: "تفعيل وتخصيص (خط الاتصال المباشر والسرّي) لاستقبال استفسارات ومقترحات الأسر رعاية لأبنائهم."
+  },
+  classroom_behavior_management: {
+    name: "إدارة السلوك الصفي", loc: "فصول وقاعات البيئة التعليمية",
+    target: "الهيئة التعليمية والمعلمون بالمدرسة", count: "بيئة صفية جاذبة وانضباط سلوكي عالي", date: "1447/02/12هـ",
+    o1: "إكساب المعلمين الاستراتيجيات والمهارات والتقنيات الحديثة لإدارة السلوك الصفي بكفاءة ونضج.",
+    o2: "خلق بيئة صفية إيجابية, جاذبة, ومحفزة تدعم جودة عمليات التعلم ونواتج التحصيل المتميز.",
+    o3: "حد وخفض السلوكيات والممارسات المعطلة والمقلقة داخل الصفوف بالطرق التربوية والأنظمة المعتمدة.",
+    o4: "ترسيخ قيم الاحترام المتبادل, الإنصات, والانضباط بين الطالب والمعلم وبين الأقران بوعي.",
+    o5: "توظيف نظام التعزيز الفوري والإيجابي لتحفيز السلوك المنضبط والالتزام الكامل بالتعليمات الصارمة.",
+    o6: "تكامل التوجيه مع المشرفين والموجه الطلابي لمعالجة المخالفات السلوكية دون تعطيل مسار الدرس المعتمد.",
+    a1: "ورشة عمل تدريبية وتفاعلية مكثفة بعنوان (فنون ومهارات القيادة الصفية وبناء البيئة الإيجابية الجاذبة).",
+    a2: "تطبيقات ومحاكاة عملية للمواقف السلوكية الشائعة داخل الصف وكيفية التعامل الحكيم معها بالميدان.",
+    a3: "تطبيق نظام (لوحة الشرف الرقمية والأسبوعية للفصل الأكثر انضباطاً وتميزاً سلوكياً وأكاديمياً).",
+    a4: "إعداد وتوزيع بطاقات وإجراءات (قواعد السلوك الرقمي والصفّي المعتمد) وتعليقها بوضوح في كافة الفصول."
+  },
+  modern_teaching_strategies: {
+    name: "استراتيجيات التدريس الحديثة", loc: "قاعة التدريب والتمهن التعليمي المعمل",
+    target: "الهيئة التعليمية والمعلمون بكافة التخصصات", count: "تميز تدريسي ونواتج تعلم مبهرة", date: "1447/02/20هـ",
+    o1: "تعريف وتمكين المعلمين من مهارات تطبيق استراتيجيات التدريس الحديثة والمتمركزة بالكامل حول الطالب.",
+    o2: "الانتقال الواعي من التلقين التقليدي إلى التعليم النشط والتفكير الابداعي والاستقصاء العلمي المتكامل.",
+    o3: "تفعيل استراتيجيات (التعلم التعاوني, حل المشكلات, العصف الذهني, والخرائط الذهنية الذكية) داخل الصف.",
+    o4: "رفع كفاءة ونواتج عمليات التعلم وتحسين مستويات التحصيل الأكاديمي والتحصيلي للطلاب بتميز واقتدار.",
+    o5: "تنمية مهارات التفكير الناقد والتحليلي وسرعة البديهة والابتكار المعرفي لدى مجمل فئات الطلاب بالمدرسة.",
+    o6: "تبادل الخبرات وتوثيق الممارسات التدريسية المتميزة والناجحة بين أعضاء التخصصات المختلفة بوعي ونضج.",
+    a1: "دورة تدريبية مكثفة وتطبيقات ميدانية شاملة حول (آليات واستراتيجيات التعلم النشط وتطبيقاتها الصفية).",
+    a2: "تنفيذ (الدروس التطبيقية والمحاكية والمتبادلة) بين المعلمين بانتظام لنقل الخبرات والمهارات وتطوير الأداء.",
+    a3: "ورش عمل ومجموعات بؤرية لتصميم خطط دراسية وبناء أدوات تقييم معتمدة على التفكير الابتكاري والناقد.",
+    a4: "تأسيس حقيبة رقمية مشتركة تضم كافة الاستراتيجيات المصممة والوسائل التعليمية ليسهل تبادلها وتطويرها."
+  },
+  tech_integration: {
+    name: "دمج التقنية بالتعليم", loc: "معمل الحاسب والصفوف والقاعات الذكية",
+    target: "الهيئة التعليمية الطلاب منسوبو المدرسة", count: "تحول رقمي تعليمي كامل وذكي", date: "1447/03/10هـ",
+    o1: "توظيف أدوات والتقنيات الرقمية والذكية وتطبيقات الويب بفعالية لدعم وتجويد عمليات التعلم والتدريس.",
+    o2: "تطوير مهارات المعلمين الرقمية والبرمجية في إنتاج وتصميم محتوى تعليمي تفاعلي ومشوق بامتياز وعالي.",
+    o3: "تمكين الطلاب من مهارات الاستخدام الرقمي الآمن والفاعل للمنصات التعليمية (منصة مدرستي) والوسائط التقنية.",
+    o4: "خلق بيئة تعليمية ذكية, جاذبة, ومستدامة تواكب مستهدفات التحول الرقمي الشامل لرؤية المملكة 2030 التنموية.",
+    o5: "تسهيل وتسريع عمليات التقييم الفوري والتغذية الراجعة الفعالة والموثوقة للطلاب عبر التطبيقات الإلكترونية الذكية.",
+    o6: "تفعيل استخدام الشاشات التفاعلية والأجهزة اللوحية والوسائط المتعددة داخل الصفوف لزيادة كفاءة التحصيل المعرفي.",
+    a1: "ورشة عمل تدريبية وعملية مكثفة حول (طرق استخدام وأدوات الذكاء الاصطناعي والتطبيقات الذكية في التعليم).",
+    a2: "تدريب عملي للمعلمين على تصميم وبناء اختبارات وألعاب تعليمية تفاعلية مشوقة وآمنة باستخدام برامج معتمدة.",
+    a3: "إطلاق مسابقة (أفضل درس تفاعلي مدمج تقنياً بالكامل) وتحفيز وتكريم المعلمين الحاصلين على مراكز متقدمة بوعي.",
+    a4: "تجهيز وتطوير مكتبة رقمية مشتركة تضم كافة الدروس والمقاطع المرئية والوسائط المصممة ليسهل استخدامها وتبادلها."
+  },
+  mental_health: {
+    name: "اليوم العالمي للصحة النفسية", loc: "قاعة التوجيه الإرشاد الطلابي والمسرح المدرسي",
+    target: "جميع منسوبي المدرسة والطلاب والأسر", count: "استقرار وتوازن نفسي متكامل وآمن واعي", date: "1447/04/18هـ",
+    o1: "رفع مستوى الوعي بالصحة النفسية وأهمية تحقيق الاستقرار والتوازن النفسي لكافة منسوبي البيئة التعليمية.",
+    o2: "التوعية بمخاطر الضغوط والتوتر والقلق وآليات الوقاية والتعامل السليم والتربوي الحكيم مع الحالات بوعي.",
+    o3: "بناء بيئة مدرسية آمنة, محفزة, وإيجابية قائمة على الاحترام والتعاون والدعم النفسي المتبادل بين الأقران والمعلمين.",
+    o4: "تنمية الذكاء العاطفي والاجتماعي وفهم الذات وإدارتها بكفاءة لمواجهة التحديات الأكاديمية واليومية بثبات ونضج.",
+    o5: "تفعيل أدوار التوجيه والإرشاد والعيادة المدرسية في تقديم الاستشارات الفردية والجماعية والدعم الوقائي الناجع بتميز.",
+    o6: "تكامل الاتصال التربوي بين المدرسة والأسرة لدعم نمو الطلاب النفسي والجسدي السليم وحمايتهم من الضغوط.",
+    a1: "ورشة عمل تفاعلية وتدريبية للطلاب بعنوان (كيفية إدارة ضغوط الدراسة والاستعداد للاختبارات بثقة واطمئنان وتفاؤل).",
+    a2: "جلسات إرشادية وتطبيقات عملية على مهارات الاسترخاء والتحكم في الانفعالات والغضب تحت إشراف الموجه الطلابي بانتظام.",
+    a3: "بث ومضات إرشادية ورسائل وقائية رقمية مصممة لأولياء الأمور لتعزيز الرعاية النفسية الواعية للأبناء بالمنزل بكفاءة.",
+    a4: "تنفيذ مسابقة لأفضل محتوى أو خاطرة أو رسمة تعبر عن ثقافة التفاؤل والوئام الاجتماعي وبناء الشخصية المتزنة الخلوقة."
+  },
+  ambitious_skills: {
+    name: "مهارات طموحة", loc: "قاعة الأنشطة والتدريب والتطوير",
+    target: "الطلاب الموهوبون وقادة المستقبل المتميزين", count: "مهارات وقدرات قيادية واعدة ومبدعة وطموحة", date: "1447/05/10هـ",
+    o1: "اكتشاف ورعاية المواهب والقدرات والمهارات القيادية والابتكارية الكبرى لدى الناشئة وصقلها بأساليب تربوية وعلمية رصينة.",
+    o2: "تنمية مهارات التخطيط الاستراتيجي الشخصي, وضع الأهداف الطموحة, وإدارة الوقت والذات بكفاءة واقتدار متكامل وعالي.",
+    o3: "تحفيز الطلاب على المبادرة والابتكار في تقديم الحلول للتحديات المدرسية والمجتمعية بروح إيجابية ودؤوبة ومستدامة بوعي.",
+    o4: "إكساب الطلاب مهارات حل المشكلات المعقدة, اتخاذ القرارات السليمة, المواجهة الجماهيرية, والخطابة بثقة وثبات تام ونضج.",
+    o5: "تعزيز قيم الإصرار والتميز والعمل الجاد لجعل الطموح معياراً سلوكياً للنجاح الأكاديمي والمهني والشخصي المتكامل للأجيال.",
+    o6: "مواكبة مستهدفات رؤية المملكة 2030 في بناء مجتمع حيوي وقدرات بشرية منافسة عالمياً وواعدة بالمنظومة التعليمية.",
+    a1: "برنامج تدريبي مكثف وحافل بالتطبيقات بعنوان (فنون القيادة الإيجابية والخطابة وصناعة المبادرات التنموية الطموحة للمستقبل).",
+    a2: "جلسات عصف ذهني طلابية لطرح ومناقشة مقترحات تطويرية للبيئة التعليمية والوسائل بالمدرسة يقودها الطلاب بتميز ونضج.",
+    a3: "إطلاق تحدي (مهارات طموحة) لأفضل مشروع ابتكاري أو مبادرة ينفذها الطلاب داخل فصولهم المدرسية بانتظام وسط تنافس بهيج.",
+    a4: "استعراض ومناقشة قصص نجاح لشخصيات وطنية ملهمة أحدثت تغييراً وريادة تنموية هائلة ليكونوا قدوة صالحة يحتذى بها الناشئة."
+  },
+  fatin_program: {
+    name: "البرنامج الوقائي فطن", loc: "المسرح المدرسي وقاعة التوعية الفكرية",
+    target: "جميع فئات الطلاب بالمدرسة منسوبيها", count: "حصانة فكرية ووعي سلوكي كامل ووقائي", date: "1447/03/25هـ",
+    o1: "تحصين عقول ونفوس الطلاب ضد الانحرافات الفكرية والسلوكية والمخاطر الوافدة بأساليب تربوية ووقائية حكيمة ومؤثرة.",
+    o2: "تنمية مهارات التفكير الناقد والتحليل الذاتي لدى الطلاب لفرز المحتوى الرقمي والإعلامي وحماية الذات من التضليل بوعي.",
+    o3: "تعزيز قيم الانتماء الصادق والولاء والمواطنة الفاعلة والاعتزاز بالهوية الوطنية والإسلامية العريقة والراسخة للأجيال.",
+    o4: "تطوير مهارات المواجهة وضغط الأقران لقول (لا) للممارسات والسلوكيات الخاطئة والمشبوهة داخل وخارج المحيط التربوي بنضج.",
+    o5: "خلق بيئة تعليمية تربوية آمنة, محمية, وصحية تدعم النمو المتكامل والتحصيل الدراسي المتميز لكافة الطلاب المستهدفين.",
+    o6: "تفعيل وتكامل الأدوار الشاملة بالمدرسة (إدارة, معلمين, توجيه طلابي, أسرة) في منظومة الرعاية وبناء الفكر الآمن الواعي.",
+    a1: "تدشين الأسبوع المكثف لبرنامج فطن الوقائي في الإذاعة المدرسية وشاشات العرض والمنصات والوسائط الإعلامية بانتظام ممتد.",
+    a2: "ورش عمل تفاعلية وجلسات حوارية يقودها الموجه الطلابي لمناقشة قيم الانضباط الذاتي والوعي الفكري والتحصين السلوكي الواعي.",
+    a3: "إطلاق مسابقة لإنتاج أفضل محتوى توعوي وقائي (فيديو قصير, مقال تحذيري, لوحة فنية) يحمل شعار (وعيي يحمي فكري وسلوكي).",
+    a4: "الاحتفاء بـ (فرسان فطن) وتكريم الطلاب الأكثر انضباطاً ووعياً وأصحاب المبادرات الإيجابية في نشر ثقافة الوسطية والاعتدال والرفق."
+  },
+  anti_corruption_day: {
+    name: "اليوم العالمي لمكافحة الفساد", loc: "الصالة الثقافية والمركز الإعلامي بالمدرسة",
+    target: "جميع الطلاب والهيئة التعليمية والإدارية", count: "نزاهة كاملة ووعي قيمي نظامي راسخ", date: "1447/05/04هـ",
+    o1: "ترسيخ وتعزيز قيم النزاهة, الأمانة, والشفافية كمرتكزات دينية ووطنية وأخلاقية كبرى في نفوس الطلاب والمجتمع بوعي دقيق.",
+    o2: "توعية الطلاب بمفهوم مكافحة الفساد وأهمية الحفاظ على الممتلكات العامة ومقدرات الوطن التنموية بكل إخلاص وإتقان سلوكي.",
+    o3: "إبراز دور المواطنة الصالحة والمسؤولية الفردية في حماية مقدرات البيئة التعليمية والمجتمعية والالتزام بالأنظمة المرعية بنضج.",
+    o4: "تحصين وحماية عقول الناشئة ضد الممارسات السلبية والتجاوزات السلوكية وبناء الانضباط الذاتي في غياب الرقابة المباشرة بتميز.",
+    o5: "مواكبة الجهود الوطنية الهائلة لهيئة الرقابة ومكافحة الفساد (نزاهة) في نشر التوعية وبناء مجتمع قيمي ومؤسسي منضبط ومستدام.",
+    o6: "تكامل الدور التربوي بين الأسرة والمدرسة لبناء أجيال تلتزم بالحقوق والواجبات وتمثل وطنها بأرقى الأمانة والممارسات الإنسانية.",
+    a1: "ندوة حوارية وتربوية كبرى بعنوان (قيم النزاهة وأثرها في بناء المواطن الصالح وحماية المنجزات الوطنية التنموية الشاملة للبلاد).",
+    a2: "مسابقة لكتابة المقال التوعوي أو تصميم لوحات تعبيرية وشعارات تحمل رسائل هادفة (أمانتي عنوان نزاهتي وتميزي السلوكي والأكاديمي).",
+    a3: "تخصيص منبر الإذاعة المدرسية وحصص النشاط لنشر ومضات إرشادية وقصص من السيرة النبوية والتاريخ في الأمانة وإتقان العمل والعدل.",
+    a4: "حفل وفير لتكريم الطلاب المتميزين والمطبقين لقيم الأمانة والنزاهة في تعاملاتهم اليومية والكتب المدرسية بشواهد ودروع تشجيعية محفزة."
+  },
+  green_impact: {
+    name: "اترك أثرك أخضر", loc: "الساحات العامة وأفنية وفصول المدرسة والمحيط الخارجي",
+    target: "جماعة الاستدامة والنشاط البيئي والطلاب", count: "بيئة مدرسية مستدامة ونظافة شاملة متكاملة", date: "1447/03/08هـ",
+    o1: "نشر ثقافة الاستدامة والوعي البيئي وأهمية الحفاظ على الموارد الطبيعية وحماية ممتلكات ومرافق الصرح التعليمي بوعي ونضج.",
+    o2: "غرس سلوكيات وممارسات النظافة الشاملة والترشيد للطاقة والمياه وجعلها نمط تعامل يومي معتمد لدى مجمل فئات الطلاب بالمدرسة.",
+    o3: "تفعيل برامج فرز وإعادة تدوير النفايات والمستهلكات المختلفة داخل المدرسة والاستفادة العلمية والجمالية منها بتميز واقتدار.",
+    o4: "تأهيل وتدريب نخبة من الطلاب ليكونوا قادة ورواداً للتوعية البيئية والتجميل البصري بين زملائهم وأسرهم بالمجتمع المحلي.",
+    o5: "دعم مستهدفات مبادرة السعودية الخضراء في زيادة التشجير وتقليل الانبعاثات وتحسين جودة الحياة للبيئة المدرسية والمجتمعية.",
+    o6: "خلق مناخ تعليمي وتربوي صحي, نقي, ومبهج يسر الناظرين ويدعم التميز الدراسي والنمو النفسي السليم لكافة الطلاب بانتظام ممتد.",
+    a1: "إطلاق المبادرة البيئية والميدانية الكبرى (اترك أثرك أخضر) لغرس شتلات زراعية وزيادة المساحات المشجرة وتجميل الجدران بالساحات.",
+    a2: "برنامج عملي ومستدام لفرز وتجميع النفايات الورقية والبلاستيكية والكتب التالفة بالتعاون مع الشركات المتخصصة لإعادة التدوير بانتظام.",
+    a3: "ورشة عمل تدريبية وتفاعلية حول الزراعة المائية والمنزلية والعناية بنباتات الظل والحدائق المصغرة والري الذكي المرشد للمياه بوعي.",
+    a4: "الاحتفاء الأسبوعي وتكريم (الفصل البيئي المثالي) والطلاب الأكثر التزاماً بالنظافة الشخصية والعامة والمظهر الحسن بشواهد وجوائز عينية."
+  },
+  positive_classroom_workshop: {
+    name: "ورشة عمل بناء بيئة صفية إيجابية", loc: "قاعة التدريب والتمهن التربوي والتعليمي",
+    target: "الهيئة التعليمية والمعلمون بكافة التخصصات", count: "إدارة صفية ملهمة ونواتج تعلم متميزة وعالية", date: "1447/02/15هـ",
+    o1: "تزويد المعلمين بالاستراتيجيات والمهارات والتقنيات الحديثة لبناء وإدارة بيئة صفية إيجابية, جاذبة, ومحفزة تدعم جودة عمليات التعلم.",
+    o2: "تحويل الصفوف الدراسية من التلقين الجامد إلى فضاءات تفاعلية مفعمة بالحيوية والتنافس الشريف والابتكار المعرفي المتكامل للطلاب.",
+    o3: "ترسيخ قيم الاحترام المتبادل, الإنصات الفعال, والتعاون البناء بين المعلم والطلاب وبين الأقران كمعايير سلوكية معتمدة بوعي ونضج.",
+    o4: "توظيف نظام التعزيز والتحفيز الفوري والإيجابي لرعاية الفروق الفردية ومساعدة كافة مستويات الطلاب على التميز والتفوق الدراسي.",
+    o5: "حد وخفض التوتر والقلق وضغوط الدراسة داخل الفصول وخلق مناخ تربوي آمن ومستقر يدعم النمو النفسي السليم والتحصيل الأكاديمي الشامل.",
+    o6: "تبادل الخبرات والممارسات التدريسية والقيادية الصفية الناجحة والملهمة بين أعضاء التخصصات المختلفة لتطوير وتجويد الأداء التدريسي.",
+    a1: "تقديم دورة تدريبية وعرض مرئي متكامل بعنوان (فنون ومهارات القيادة الصفية الملهمة وبناء البيئات التعليمية الإيجابية المحفزة لنواتج التعلم).",
+    a2: "تطبيقات ومحاكاة عملية للمواقف السلوكية الشائعة داخل الصف وكيفية التعامل التربوي الحكيم والذكي معها دون تعطيل مسار الدرس المعتمد.",
+    a3: "تطبيق نظام (بطاقات التعزيز الفوري الرقمي ولوحات الشرف الأسبوعية للفصل المنضبط والأكثر تفاعلاً وإيجابية وأداءً أكاديمياً متميزاً).",
+    a4: "ورشة عمل ومجموعات بؤرية لتصميم صياغة قواعد السلوك والانضباط الصفّي المعتمد والمحبب للطلاب وتعليقها بوضوح في كافة الفصول المدرسية."
+  },
+  one_minute_strategy: {
+    name: "استراتيجية الدقيقة الواحدة", loc: "الفصول الدراسية وقاعات البيئة التعليمية",
+    target: "الهيئة التعليمية والمعلمون والطلاب بالصفوف", count: "تقييم تكويني سريع واستثمار ذكي ومبهر للوقت الصفي", date: "1447/03/02هـ",
+    o1: "تمكين المعلمين من مهارات تطبيق (استراتيجية الدقيقة الواحدة) كأداة ذكية وفعالة للتقييم التكويني السريع وقياس نواتج التعلم الفورية.",
+    o2: "استثمار وإدارة الوقت الصفي بكفاءة واقتدار عالٍ وكسر جمود ورتابة الحصص الدراسية بأنشطة ذهنية سريعة ومشوقة وجاذبة للطلاب بوعي.",
+    o3: "تنمية مهارات التفكير السريع, التلخيص الدقيق للأفكار, وصياغة الإجابات المركزة والواضحة بثقة تامة لدى مجمل فئات الطلاب بالمدرسة.",
+    o4: "تقديم التغذية الراجعة الفعالة والموثوقة والفورية للطلاب لمعالجة الفجوات المعرفية ورصد الحالات التي تحتاج دعماً تربوياً مستهدفاً ونضج.",
+    o5: "تحفيز المشاركة والتفاعل الكامل لكافة الطلاب داخل الصف وخاصة الانطوائيين ودون المتوسط عبر تحديات تنافسية مبسطة ومحددة بوقت.",
+    o6: "تجويد عمليات بناء الخطط التدريسية اليومية وتطوير أساليب القياس والتقويم المستمر تماشياً مع أحدث النظم والتوجهات التربوية الحديثة.",
+    a1: "ورشة عمل تدريبية وتطبيقات ميدانية شاملة للمعلمين حول (آليات واستراتيجيات دمج وتطبيق تحدي الدقيقة الواحدة في ثنايا الحصص الدراسية).",
+    a2: "تنفيذ دروس تطبيقية متبادلة ومحاكية بين المعلمين بانتظام لنقل الخبرات والمهارات وتطوير الكفاءة التدريسية في إدارة الوقت الصفي بتميز.",
+    a3: "تطبيق عملي على استخدام بطاقات وأوراق (تحدي الدقيقة الواحدة والذهبية) صياغةً وحلاً ورصداً لنواتج التعلم ومستويات التحصيل للطلاب.",
+    a4: "إنشاء وتجهيز بنك مشترك رقمي يضم أفضل الأسئلة والتحديات الذهنية القصيرة المصممة لكافة المواد ليسهل تبادلها وتطويرها المستمر."
+  },
+  individual_care: {
+    name: "الرعاية الفردية", loc: "قاعة التوجيه والإرشاد الطلابي والفصول",
+    target: "الطلاب ذوو الاحتياجات السلوكية والتحصيلية الخاصة", count: "دعم مستهدف ومتابعة تربوية ونفسية حكيمة وشاملة", date: "1447/04/05هـ",
+    o1: "تقديم الرعاية والدعم التربوي والنفسي والسلوكي المستهدف والمخصص لكل طالب بناءً على احتياجاته وقدراته الفردية بوعي دقيق ونضج.",
+    o2: "رصد واكتشاف الطلاب متعثري التحصيل الدراسي ودون المتوسط ووضع خطط علاجية ومتابعة جادة لمعالجة الفجوات ورفع مستوياتهم الأكاديمية.",
+    o3: "رعاية الطلاب المتفوقين والموهوبين وتحدي قدراتهم العقلية بأنشطة إثرائية نوعية ومتميزة تضمن استمرار تميزهم وريادتهم العلمية بالمدرسة.",
+    o4: "دراسة وتوثيق الحالات السلوكية والنفسية المقلقة والمستعصية وتصميم برامج إرشادية فردية سرّية وآمنة بالتكامل مع أولياء الأمور والأسرة.",
+    o5: "خلق بيئة تعليمية وتربوية عادلة, دامجة, ومحفزة تضمن تكافؤ الفرص وشعور كافة الطلاب بالأمان والانتماء والاستقرار النفسي المتكامل.",
+    o6: "تكامل الأدوار والاتصال التربوي المستمر بين المعلم داخل الصف والموجه الطلابي والأسرة لتنفيذ الخطط العلاجية والإثرائية بكفاءة مستدامة.",
+    a1: "عقد جلسات إرشادية وفردية دورية وسرّية يقودها الموجه الطلابي لدراسة ومتابعة الحالات السلوكية والنفسية والتحصيلية المرصودة بالمنظومة.",
+    a2: "تصميم وتنفيذ (بطاقات المتابعة الفردية والأكاديمية اليومية والمستهدفة) للطلاب بالتنسيق والتعاون المباشر مع معلمي المواد والأسرة بانتظام.",
+    a3: "إطلاق مجموعات الدعم والتقوية الدراسية المصغرة لمعالجة الفجوات التعليمية للطلاب متعثري التحصيل في المواد الأساسية بطرق تربوية حكيمة.",
+    a4: "الاحتفاء الدوري وتكريم الطلاب الذين أظهروا تحسناً ملموساً وتقدماً في مستوياتهم الأكاديمية والسلوكية بشواهد وجوائز تشجيعية محفزة بوعي."
+  },
+  innovation: {
+    name: "الابتكار", loc: "قاعة الابتكار والمختبر العلمي الذكي ومعمل التقنيات",
+    target: "طلاب النادي العلمي والموهوبين والمبتكرين", count: "عقول مخترعة ومشاريع ابتكارية رائدة تواكب المستقبل", date: "1447/05/16هـ",
+    o1: "نشر ثقافة الابتكار والتفكير الابتكاري الخلاق في أوساط البيئة الطلابية وجعل الاختراع معياراً أساسياً للتميز الشخصي والأكاديمي بوعي.",
+    o2: "تنمية مهارات التفكير الناقد, التحليلي, الهندسي, وحل المشكلات المعقدة بأساليب ومنهجيات علمية رصينة ومبتكرة لدى مجمل فئات الطلاب.",
+    o3: "تحويل الأفكار والمفاهيم العلمية والنظرية الجامدة إلى مشاريع, نماذج مجسمة, وتطبيقات عملية ملموسة تخدم المحيط المدرسي والمجتمعي بتميز.",
+    o4: "تأهيل وتدريب ودعم الطلاب الموهوبين والمبتكرين وتجهيزهم للمشاركة الفاعلة والمشرفة في المسابقات والأولمبيادات الوطنية والعالمية الكبرى.",
+    o5: "مواكبة مستهدفات رؤية المملكة 2030 في بناء مجتمع معرفي رقمي رائد وقدرات بشرية منافسة عالمياً قادرة على القيادة والابتكار والتطوير.",
+    o6: "التوعية بأخلاقيات البحث العلمي والأمان الرقمي والموثوقية وبراءات الاختراع وحماية الحقوق الفكرية للمشاريع المصممة بنضج وتكامل تربوي.",
+    a1: "ورشة عمل تطبيقية وعملية مكثفة وحافلة بالتحديات بعنوان (من الفكرة إلى براءة الاختراع... خطوات بناء وتصميم المشاريع الابتكارية الرائدة).",
+    a2: "جلسات عصف ذهني طلابية ومجموعات عمل متخصصة لطرح ومناقشة مقترحات وحلول ابتكارية للتحديات البيئية والتعليمية بالمدرسة وخارجها بانتظام.",
+    a3: "إطلاق وتدشين تحدي ومسابقة (مبتكر مدرسة جابر بن حيان) لأفضل نموذج هندسي أو تطبيق ذكي يصممه الطلاب يشارك به الفصول وسط تنافس بهيج.",
+    a4: "تنظيم المعرض الختامي السنوي (واحة الابتكار والعلوم) لعرض ابتكارات ومشاريع الطلاب الموهوبين بحضور إدارة المدرسة وأولياء الأمور والمشرفين."
+  },
+  visual_stories: {
+    name: "حكايات مرئية", loc: "المركز الإعلامي واستوديو المدرسة وقاعة المصادر",
+    target: "الطلاب المهتمون بصناعة المحتوى والإنتاج المرئي", count: "صناع محتوى رقمي قيمي وملهم ومتميز بالوسائط", date: "1447/04/24هـ",
+    o1: "تأطير وتنظيم وتوجيه شغف الطلاب بالتقنيات والمنصات الرقمية نحو صناعة محتوى مرئي قيمي, إيجابي, ملهم, ومتميز يخدم المجتمع بوعي.",
+    o2: "تدريب الطلاب على مهارات وتقنيات الإنتاج المرئي الأساسية (كتابة السيناريو, التصوير الاحترافي, المونتاج الرقمي, والإخراج السينمائي).",
+    o3: "تنمية مهارات التفكير الإبداعي, التعبير الفني واللغوي, وبناء القصص الهادفة والراسخة وصياغتها بأساليب جاذبة ومشوقة للناشئة بنضج.",
+    o4: "بناء فريق إعلامي واعد يسهم في توثيق وإبراز مناشط, إنجازات, ونجاحات الصرح التعليمي المتميز ونشرها عبر القنوات الرسمية بتميز.",
+    o5: "نشر وترسيخ قيم الأخلاقيات الرقمية والإعلامية وحماية الملكية الفكرية والأمان المعلوماتي في استخدام وسائل التواصل الاجتماعي بوعي دقيق.",
+    o6: "اكتشاف ورعاية الطلاب الموهوبين والمتميزين في مجالات التقدير المرئي, التمثيل التربوي, والتحليل الرقمي وصقل قدراتهم بشكل علمي ومنظم.",
+    a1: "دورة تدريبية عملية مكثفة وتطبيقات ميدانية شاملة بعنوان (فنون صناعة المحتوى المرئي... من صياغة الفكرة والقصة حتى المونتاج والإخراج النهائي).",
+    a2: "ورشة عمل تطبيقية في معمل الحاسب واستوديو المدرسة لتدريب الطلاب عملياً على برامج المونتاج الرقمي وتعديل الصوت والإضاءة باحترافية.",
+    a3: "إطلاق وتدشين تحدي ومسابقة (أفضل فيلم وثائقي أو قصة مرئية قصيرة) يجسد قيمة أخلاقية أو منجزاً وطنياً يشارك بصياغتها وإنتاجها الطلاب.",
+    a4: "عرض الاحتفالية وتكريم الفائزين بالمراكز الأولى وعرض أفلامهم المتميزة في شاشات المدرسة الذكية وفي الطابور الصباحي وسط حضور بهيج ومحفز."
+  },
+  future_cities: {
+    name: "مدن المستقبل", loc: "معمل الهندسة والرسم الفني وقاعة الحاسب الآلي",
+    target: "طلاب المسار الهندسية والعلمي والنادي التقني", count: "مهندسو ومصممو مدن الغد الذكية والمستدامة", date: "1447/06/15هـ",
+    o1: "تعريف الطلاب بمفاهيم الهندسة المعمارية, التخطيط الحضري الحديث, والمدن الذكية والمستدامة وأهميتها لمستقبل جودة الحياة بوعي ونضج.",
+    o2: "تنمية مهارات التفكير الهندسي, التحليلي, والمكاني, والقدرة على بناء وتصميم نماذج ومجسمات ثلاثية الأبعاد بأساليب علمية دقيقة ومتسقة.",
+    o3: "تحفيز الطلاب على الابتكار وتوظيف التقنيات الحديثة والطاقة المتجددة في تقديم حلول ذكية للتحديات الحضرية (المرور, الطاقة, النفايات).",
+    o4: "مواكبة مستهدفات وتطلعات المشاريع الوطنية الكبرى لرؤية المملكة 2030 (مشروع نيوم, ذا لاين, والمدن الذكية) وبث الفخر بها الناشئة.",
+    o5: "تشجيع العمل الجماعي والتعاون البناء والانسجام والتعلم التعاوني القائم على المشاريع الهندسية المشتركة بين الفرق الطلابية بالمدرسة.",
+    o6: "فتح آفاق علمية وأكاديمية جديدة وواعدة للطلاب تخدم توجهاتهم المستقبلية في مجالات الهندسة والتكنولوجيا والابتكار بكفاءة واقتدار عالي.",
+    a1: "ورشة عمل تطبيقية وعملية مكثفة لتدريب الطلاب على برامج التصميم الهندسي البسيط ومجسمات الأبعاد لبناء وتخطيط مرافق مدينة ذكية مصغرة.",
+    a2: "جلسات عصف ذهني ومجموعات عمل لتصميم مجسم كرتوني أو بلاستيكي متكامل يحاكي (مدينة المستقبل المستدامة ذات الطاقة النظيفة والري الرقمي).",
+    a3: "إطلاق وتدشين تحدي ومسابقة (أفضل تصميم هندسي لمدينة ذكية) وتحفيز وتكريم الفرق الطلابية المتميزة في الابتكار والتصميم الهندسي للمشاريع.",
+    a4: "معرض (مدن الغد الذكية) لعرض ومناقشة مجسمات وتصاميم الطلاب الهندسية بحضور إدارة المدرسة وأولياء الأمور والمشرفين في تلاحم بهيج متميز."
+  },
+  iot_program: {
+    name: "إنترنت الأشياء", loc: "معمل الحاسب الآلي والابتكار الرقمي المطور",
+    target: "طلاب النادي العلمي وجماعة الحاسب والتقنية والذكاء", count: "قادة ومطورو المنظومات الرقمية والذكية المترابطة", date: "1447/06/28هـ",
+    o1: "تعريف الطلاب بمفاهيم وتقنيات (إنترنت الأشياء IoT) والتحول الرقمي الشامل ودورهما المحوري في بناء الثورة الصناعية الحديثة ومستقبل التقنية بوعي.",
+    o2: "إكساب الطلاب المهارات البرمجية والعملية الأساسية للتعامل مع الحساسات, المستشعرات, والمتحكمات الدقيقة (مثل الأردوينو والراسبيري باي) باحترافية.",
+    o3: "تنمية مهارات التفكير التحليلي, المنطقي, وحل المشكلات المعقدة وتوظيف الأنظمة الذكية والمترابطة في خدمة المحيط المدرسي والمجتمعي بتميز واقتدار.",
+    o4: "تحفيز التفكير الابتكاري وتصميم وتطبيق نماذج أولية ذكية ومحاكية لأنظمة الأتمتة (كالمنزل الذكي, الري الآلي للمزروعات, والإضاءة الذكية المرشدة طاقة).",
+    o5: "مواكبة المستهدفات الضخمة والتوجهات الاستراتيجية للمملكة في بناء القدرات البشرية الرقمية وتوطين التكنولوجيا وبناء الاقتصاد المعرفي الذكي للأجيال.",
+    o6: "نشر قيم ومبادئ الأمن السيبراني والأمان الرقمي والموثوقية والأخلاقيات التقنية في استخدام وبناء الأنظمة والمنظومات البرمجية والمترابطة بنضج.",
+    a1: "ورشة عمل تدريبية وتطبيقات عمليّة مكثفة بعنوان (مقدمة تطبيقية في إنترنت الأشياء... تركيب وبرمجة الحساسات الذكية لبناء أنظمة الأتمتة والتحكم).",
+    a2: "تدريب عملي ومجموعات عمل في المعمل لتوصيل وبرمجة لوحات الأردوينو والحساسات لقياس درجة الحرارة والرطوبة والتحكم التلقائي بالإضاءة بانتظام.",
+    a3: "إطلاق وتدشين تحدي ومسابقة (أفضل مشروع لإنترنت الأشياء يخدم البيئة المدرسية) وتحفيز وتكريم الطلاب أصحاب الحلول البرمجية والذكية المتميزة.",
+    a4: "عرض مرئي وتوضيحي في الطابور الصباحي وأمام منسوبي المدرسة يستعرض المنظومات الذكية المصممة من الطلاب وآليات عملها المبهرة لزيادة الوعي التقني."
+  },
+  creativity_parenting: {
+    name: "الإبداع في تربية الأبناء", loc: "قاعة التدريب والمسرح ومجموعات التواصل الرقمية",
+    target: "أولياء الأمور والأسر والهيئة التعليمية والإرشادية", count: "شراكة تربوية واعية وأسر مستقرة وناشئة خلوقة ومتميزة", date: "1447/03/20هـ",
+    o1: "تزويد أولياء الأمور والأسر بالأساليب والمهارات والفنون التربوية الإبداعية والحديثة لبناء شخصية متزنة وناجحة ومستقرة للأبناء بوعي ونضج.",
+    o2: "تعزيز وتوثيق روابط التواصل والتعاون والشراكة الاستراتيجية المتينة بين البيت والمدرسة لتكامل الرسالة التوجيهية والتربوية والقيمية الأصيلة.",
+    o3: "توعية الأسر بكيفية التعامل الحكيم والتربوي السليم مع الخصائص النفسية والسلوكية للناشئة في شتى مراحل النمو (الطفولة والمراهقة) بكفاءة عالية.",
+    o4: "تدريب الوالدين على مهارات الحوار البناء, الإنصات الفعال, احتواء الانفعالات, وحل المشكلات الأسرية بطرق ودية وذكية تدعم استقرار الأبناء نفسياً.",
+    o5: "نشر ثقافة رعاية المهارات والابتكار وتحفيز التفوق الدراسي والأكاديمي والشخصي للأبناء عبر خلق بيئات منزلية محفزة, إيجابية, وخالية من الضغوط.",
+    o6: "الحد وخفض الممارسات التربوية الخاطئة (كالقسوة, الهجر, الإهمال, أو الدلال الزائد) والتوعية بآثارها المقلقة على سلوك وتحصيل الناشئة بالميدان.",
+    a1: "تنظيم دورة تدريبية ولقاء تربوي موسع وحافل بالتطبيقات بعنوان (فنون التربية الإبداعية وبناء الثقة والمسؤولية الشخصية في نفوس الأبناء وقادة الغد).",
+    a2: "عقد ورش عمل وجلسات حوارية ونقاشية يقودها الموجه الطلابي مع الأسر لمناقشة طرق التعامل مع ضغوط الدراسة والاستعداد الذكي والآمن للاختبارات بوعي.",
+    a3: "تصميم ونشر حزمة من المطويات والبطاقات الرقمية التوعوية والرسائل الإرشادية القصيرة الملهمة وبثها بانتظام للأسر عبر مجموعات ومنصات التواصل للمدرسة.",
+    a4: "الاحتفاء بلقاء (شركاء النجاح والتميز) لتكريم أولياء الأمور والأسر الأكثر تعاوناً ومتابعة وتواصلاً مستمراً مع الصرح التعليمي لدعم أبنائهم الطلاب."
+  },
+  misk_program: {
+    name: "برنامج مسك", loc: "مركز مصادر التعلم والصالة الثقافية",
+    target: "طلاب المراحل العليا والمهتمون بالقيادة والريادة", count: "مهارات واعدة وريادة شبابية طموحة", date: "1447/07/12هـ",
+    o1: "التعريف ببرامج ومبادرات مؤسسة مسك الخيرية ودورها الرائد في تمكين الشباب.",
+    o2: "تنمية مهارات القيادة, الريادة, والمسؤولية الشخصية والاجتماعية لدى الطلاب.",
+    o3: "تحفيز الطلاب على التخطيط المهني والأكاديمي الصائب للمستقبل بثقة وثبات.",
+    o4: "إكساب الطلاب مهارات القرن الحادي والعشرين (التواصل, التفاوض, وحل المشكلات).",
+    o5: "فتح آفاق علمية وعملية جديدة تخدم توجهات الطلاب وتطلعاتهم الوطنية الطموحة.",
+    o6: "بناء شخصية طالب واعية, مبادرة, قادرة على العطاء والمنافسة والتميز الشامل.",
+    a1: "ورشة عمل تدريبية بعنوان (اكتشف قدراتك القيادية وصمم مسارك المهني مع مسك).",
+    a2: "عرض مرئي واستعراض للمنصات والمبادرات والبرامج الإثرائية التي تقدمها المؤسسة.",
+    a3: "تحدي (ريادي مسك) لطرح أفكار مشاريع ومبادرات تنموية تخدم البيئة المدرسية بوعي.",
+    a4: "تكريم الطلاب المتميزين وأصحاب المبادرات الأكثر ابتكاراً وتنظيماً بشواهد تقدير."
+  },
+  future_researcher: {
+    name: "باحث المستقبل", loc: "المكتبة المدرسية ومركز مصادر التعلم الذكي",
+    target: "الطلاب الشغوفون بالقراءة والتقصي العلمي والبحث", count: "علماء وباحثو ومستكشفو الغد المعرفي", date: "1447/06/02هـ",
+    o1: "تأصيل وبناء مهارات البحث والتقصي العلمي المنهجي والرصين في عقول وعادات الطلاب.",
+    o2: "تدريب الطلاب على صياغة التساؤلات, جمع البيانات والمؤشرات, وتحليلها بموضوعية تامة.",
+    o3: "تفعيل واستغلال دور مصادر التعلم والمكتبة الرقمية كمرتكز حيوي لتلقي المعارف والعلوم بوعي.",
+    o4: "إكساب الطلاب مهارات التلخيص, النقد البناء للأفكار, وصياغة التقارير العلمية المتميزة.",
+    o5: "رعاية وتأهيل الطلاب الموهوبين بحثياً للمشاركة الفاعلة في المسابقات العلمية الوطنية.",
+    o6: "بناء شخصية طالب واعية, مثقفة, قادرة على الفهم والتحليل والحوار الهادف والمنظم في شتى المعارف.",
+    a1: "دورة تدريبية عملية مكثفة وتطبيقات شاملة بعنوان (مهارات باحث المستقبل والتوثيق الأكاديمي).",
+    a2: "تدريب عملي للطلاب في معمل الحاسب على استخدام محركات البحث العلمي وتصفح المنصات الرقمية.",
+    a3: "مسابقة (أفضل بحث مدرسي مصغر) يعالج ظاهرة بيئية أو تعليمية ويطرح حلولاً ابتكارية لها بتميز.",
+    a4: "حلقة نقاش وجلسة استماع علنية يقدم فيها الطلاب عروضاً مرئية لمشاريعهم البحثية المصممة."
+  },
+  secure_family: {
+    name: "أسرة آمنة", loc: "قاعة التوجيه والإرشاد والمسرح المدرسي الكبرى",
+    target: "جميع الطلاب وأولياء الأمور والأسر منسوبو المدرسة", count: "حصانة مجتمعية واستقرار أسري ونفسي متكامل واعي", date: "1447/03/12هـ",
+    o1: "ترسيخ وتعزيز قيم الاستقرار الأسري والتلاحم الاجتماعي والتراحم في نفوس الطلاب والمجتمع بوعي دقيق.",
+    o2: "توعية الطلاب وأسرهم بآليات الوقاية والحماية والتعامل السليم مع المخاطر السلوكية والرقمية المحيطة بنضج.",
+    o3: "تحصين عقول الناشئة ضد التيارات الوافدة والسلوكيات والممارسات الخاطئة وبناء الانضباط والرقابة الذاتية.",
+    o4: "تطوير مهارات التواصل الفعال والرفق والكلمة الطيبة والتعامل الإيجابي بين الوالدين والأبناء بالمنزل بكفاءة.",
+    o5: "تفعيل أدوار المدرسة الشاملة والإرشاد في تقديم الاستشارات الفردية والجماعية والدعم الوقائي الناجع بتميز.",
+    o6: "تكامل الدور التربوي والشراكة المتينة بين الأسرة والمدرسة لبناء أجيال تلتزم بالقيم وتمثل وطنها برقي.",
+    a1: "ندوة حوارية وتربوية كبرى بالتعاون مع الجهات المختصة بعنوان (الأسرة الآمنة ركيزة الاستقرار الفكري والسلوكي).",
+    a2: "ورشة عمل تدريبية وتفاعلية للطلاب بعنوان (كيف أحافظ على سلامتي الرقمية والجسدية وأبني علاقات أسرية إيجابية).",
+    a3: "بث ومضات إرشادية ورسائل وقائية رقمية مكثفة ومصممة بعناية لأولياء الأمور لتعزيز المتابعة والرعاية الأسرية الواعية.",
+    a4: "الاحتفاء الدوري وتكريم الأسر الأكثر تعاوناً ومتابعة وتواصلاً مستمراً مع الصرح التعليمي لدعم أبنائهم الطلاب بشواهد."
+  },
+  mawhiba_program: {
+    name: "برنامج موهبة التعليمي", loc: "قاعة رعاية الموهوبين والمختبرات الذكية",
+    target: "الطلاب الموهوبون والمجتازون لمقياس موهبة الرسمي", count: "نخبة العقول المبدعة والقدرات الفذة بالمدرسة", date: "1447/04/15هـ",
+    o1: "اكتشاف ورعاية واحتضان العقول الطلابية الموهوبة والقدرات الفذة بالمدرسة بأساليب تربوية وعلمية رصينة.",
+    o2: "تنمية مهارات التفكير العليا (التحليلي, الناقد, والابتكاري الإبداعي) وتحدي قدراتهم العقلية بأنشطة إثرائية نوعية.",
+    o3: "توفير البيئة التعليمية والمادية المحفزة والدعم المعرفي لتطوير مشاريع ونماذج الطلاب الابتكارية المتميزة بكفاءة.",
+    o4: "تأهيل وتدريب الطلاب الموهوبين للمشاركة الفاعلة والمشرفة في الأولمبيادات والمسابقات والبرامج الإثرائية الوطنية والعالمية.",
+    o5: "ربط قدرات الطلاب الموهوبين بمستهدفات التحول الرقمي وبناء مجتمع معرفي تماشياً مع رؤية المملكة المتميزة 2030.",
+    o6: "تبادل الممارسات التدريسية الإثرائية والملهمة بين أعضاء الهيئة التعليمية لتطوير رعاية الموهبة بالمنظومة بوعي ونضج.",
+    a1: "ورشة عمل تدريبية وعملية مكثفة وحافلة بالتحديات بعنوان (استراتيجيات كورت لتنمية مهارات التفكير الإبداعي والابتكار العلمي).",
+    a2: "تدريب عملي ومجموعات عمل في المختبرات ومعمل الحاسب لتنفيذ تجارب علمية مشتركة ومشاريع بحثية متطورة بانتظام ممتد.",
+    a3: "تسجيل مشاريع الطلاب المبتكرة بشكل رسمي في المنصات الوطنية المعتمدة وإدراجهم في برامج موهبة الإثرائية الصيفية بوعي.",
+    a4: "المهرجان السنوي والاحتفاء بـ (أسبوع الموهبة والإبداع المدرسي) لعرض ابتكارات ونماذج الطلاب وتكريم فرسان التميز العلمي."
+  },
+  six_hats_course: {
+    name: "دورة القبعات الست", loc: "قاعة التدريب والتمهن والأنشطة والوسائط",
+    target: "الطلاب والمعلمون المهتمون بمهارات التفكير الذكي", count: "تفكير متوازن وقرارات صائبة وحلول ذكية وابتكارية", date: "1447/03/16هـ",
+    o1: "تعريف وتمكين المشاركين من مهارات تطبيق (استراتيجية قبعات التفكير الست) لإدوارد دي بونو كأداة ذكية للتفكير المنظم.",
+    o2: "تطوير وتنظيم أساليب التفكير وتفكيك وحل المشكلات والنزاعات بطرق ودية وذكية واتخاذ القرارات السليمة بثقة تامة بوعي.",
+    o3: "تحفيز التفكير الابتكاري التنافسي, تنمية مهارات الذكاء العاطفي والاجتماعي, وفهم وتحليل الآراء المتعددة بنضج متكامل.",
+    o4: "رفع كفاءة عمليات التعلم والتدريس وتحسين مستويات التحصيل والقيادة الشخصية والاجتماعية الفاعلة لدى الطلاب بالمدرسة.",
+    o5: "خلق مناخ تعليمي وتربوي مفعم بالحيوية, الإيجابية, والاحترام المتبادل قائم على الحوار الهادف والمنظم في شتى المعارف.",
+    o6: "تبادل الممارسات والخبرات القيادية والتدريسية الناجحة بين منسوبي المدرسة لتطوير وتجويد الأداء التعليمي والسلوكي بتميز.",
+    a1: "برنامج تدريبي مكثف وحافل بالتطبيقات والتمارين العملية بعنوان (مهارات التفكير المتوازن والمنظم باستخدام القبعات الست).",
+    a2: "جلسات محاكاة عملية وعصف ذهني طلابية لطرح ومناقشة تحدي أو قضية مدرسية وتحليلها من خلال ارتداء القبعات بانتظام بوعي.",
+    a3: "تطبيق عملي ومجموعات عمل لتصميم خرائط ذهنية وبناء خطط شخصية تعتمد على أنماط التفكير المتعددة للطلاب وسط تنافس بهيج.",
+    a4: "حفل ختامي لتوزيع شهادات إتمام الدورة المدرسية المعتمدة وتكريم الطلاب والمعلمين الأكثر تميزاً وتفاعلاً في الأداء التدريبي."
+  },
+  qatrat_test: {
+    name: "اختبار القدرات", loc: "قاعة الاختبارات والتحصيل ومعمل الحاسب الآلي",
+    target: "طلاب المرحلة الثانوية بكافة مساراتها المستهدفة", count: "تدريب مكثف ومهارات عالية لاجتياز قياس بتميز باهر", date: "1447/06/05هـ",
+    o1: "تأهيل وتدريب الطلاب بمهارات استراتيجيات التعامل الذكي والصائب مع اختبار القدرات العامة (قياس) بجزأيه اللفظي والكمي.",
+    o2: "تنمية مهارات التفكير التحليلي, المنطقي, الاستنتاج, وسرعة البديهة والحلول الذكية والذهنية للمسائل والتحديات المعقدة بوعي.",
+    o3: "تفكيك الصعوبات وإزالة قلق الاختبارات وبناء الثقة الكاملة بالنفس لدى الطلاب من خلال المحاكاة والتدريب بانتظام مستدام.",
+    o4: "رفع معدلات ونسب قبول الطلاب في الجامعات ومواكبة تطلعاتهم الأكاديمية والمهنية المستقبلية الواعدة بكل اقتدار وتميز.",
+    o5: "توظيف التقنيات الحديثة والمنصات التدريبية في تصميم اختبارات تجريبية ومحاكية تعطي نتائج وتغذية راجعة فورية ودقيقة ونضج.",
+    o6: "تكامل الدور والتعاون بين معلمي الرياضيات واللغة العربية والموجه الطلابي لبناء خطط تدريبية ودعم مستهدف لكافة الفئات.",
+    a1: "برنامج تدريبي مكثف ممتد لعدة أسابيع يتناول بشرح مفصل مهارات الاستيعاب, التناظر, الجبر, الهندسة, والمسائل الحسابية بتميز.",
+    a2: "تنفيذ أسبوعي للاختبارات التجريبية المحاكية تماماً لاختبار قياس الفعلي (ورقي ومحوسب) لقياس التقدم وتطوير الأداء والسرعة.",
+    a3: "ورش عمل ومجموعات بؤرية للطلاب لمناقشة وشرح طرق واستراتيجيات الحل السريع والذكي واستبعاد الخيارات الخاطئة بذكاء واطمئنان.",
+    a4: "تكريم الطلاب الحاصلين على أعلى درجات في الاختبارات التجريبية وتوزيع حقائب تدريبية وملخصات رقمية قيمة ومحفزة للجميع بوعي."
+  },
+  tahsili_test: {
+    name: "الاختبار التحصيلي", loc: "قاعة التحصيل العلمي ومختبرات المدرسة الذكية",
+    target: "طلاب الصف الثالث الثانوي بكافة المسارات العلمية", count: "استعداد كامل ومراجعة شاملة للتحصيل والتميز الأكاديمي", date: "1447/07/08هـ",
+    o1: "تأهيل وتدريب الطلاب بمهارات ومراجعة المفاهيم العلمية الأساسية لاجتياز الاختبار التحصيلي (قياس) في المواد العلمية بكفاءة.",
+    o2: "تركيز وتلخيص المحتوى المعرفي لمواد (الرياضيات, الفيزياء, الكيمياء, والأحياء) لصفوف المرحلة الثانوية الثلاثة بوعي رصين.",
+    o3: "إكساب الطلاب استراتيجيات الحل السريع والذكي وإدارة الوقت بفعالية عالية أثناء خوض غمار الاختبارات المركزية والوطنية بنضج.",
+    o4: "رفع مستويات نواتج التعلم وتحسين نسب ومعدلات المدرسة في المؤشرات الرسمية للقبول الأكاديمي والجامعي المتميز للأجيال.",
+    o5: "إزالة قلق وتوتر الاختبارات وبناء الثقة والاطمئنان والدافعية الإيجابية في نفوس الطلاب من خلال التدريب والمحاكاة بانتظام.",
+    o6: "تفعيل منصات التقييم الرقمية لمتابعة مستويات الطلاب ورصد الفجوات التعليمية وتصميم خطط المعالجة والدعم التربوي المستهدف.",
+    a1: "سلسلة محاضرات لقاءات مكثفة ومراجعات شاملة يقودها نخبة من معلمي المواد العلمية المتميزين لتغطية كافة فروع التحصيلي بتميز.",
+    a2: "تنفيذ حزمة من الاختبارات التحصيلية التجريبية والمحاكية للاختبار الفعلي ورصد وتحليل النتائج إلكترونياً لتقديم التغذية الراجعة.",
+    a3: "تأسيس بنك رقمي مشترك وحقيبة تدريبية تضم مجمل التجميعات والأسئلة الشائعة والحلول النموذجية ليسهل استذكارها وتداولها.",
+    a4: "احتفالية تشجيعية وتكريم الطلاب المنضبطين والمتميزين في التقييمات التحصيلية وتوزيع دروع تشجيعية ومحفزة لمواصلة التميز بوعي."
+  },
+  step_test: {
+    name: "اختبار Step", loc: "معمل اللغة الإنجليزية ومختبر الحاسب الآلي الرقمي",
+    target: "الطلاب المستهدفون والراغبون بالتميز اللغوي", count: "كفاية لغوية ومهارات عالية لاجتياز اختبار ستيب بتميز باهر", date: "1447/07/22هـ",
+    o1: "تأهيل وتدريب الطلاب بمهارات واستراتيجيات التعامل الصائب مع اختبار كفاية اللغة الإنجليزية (STEP) الرسمي التابع لقياس بوعي.",
+    o2: "تطوير وتحسين المهارات اللغوية الكبرى والأربعة (فهم المقروء, التراكيب النحوية, الفهم المسموع, والتحليل الكِتابي الأصيل) بدقة.",
+    o3: "توسيع الحصيلة والمخزون اللغوي من الكلمات والمصطلحات الأكاديمية وتحسين جودة الفهم والاستيعاب للنصوص المعقدة بنضج وتكامل.",
+    o4: "رفع نسب ومعدلات قبول الطلاب في البرامج الجامعية والبعثات والمسارات المهنية والأكاديمية الواعدة والمتميزة للمستقبل بثقة تامة.",
+    o5: "إزالة قلق وتوتر الاختبارات اللغوية وبناء الانضباط والدافعية الذاتية في نفوس الطلاب من خلال التدريب والمحاكاة بانتظام ممتد.",
+    o6: "تفعيل استخدام التكنولوجيا ومعامل الصوتيات الرقمية وتطبيقات الويب الذكية لتوفير بيئة تدريبية تفاعلية ومشوقة تضمن التميز اللغوي.",
+    a1: "دورة تدريبية مكثفة ومستدامة يقودها معلمو اللغة الإنجليزية المتميزون لشرح تراكيب القواعد وآليات القراءة السريعة والاستماع بدقة.",
+    a2: "تنفيذ اختبارات تجريبية ومحاكية تماماً لاختبار ستيب الفعلي في معمل الحاسب لقياس مستويات كفاية اللغة ورصد التقدم الفردي بانتظام.",
+    a3: "ورش عمل ومجموعات بؤرية تفاعلية للطلاب لمناقشة وتحليل الأسئلة الشائعة وتطبيقات القواعد وحل التدريبات اللغوية وسط تنافس بهيج.",
+    a4: "حقيبة رقمية مشتركة تضم مجمل الملخصات, الملفات الصوتية, والتجميعات المصممة ليسهل استذكارها وتبادلها بين فرسان اللغة بوعي."
+  },
+  my_character_represents_me: {
+    name: "مبادرة خلقي يمثلني", loc: "الفصول الدراسية وساحات المدرسة والمسرح الكبرى",
+    target: "جميع طلاب المدرسة والهيئة التعليمية والإدارية والأسر", count: "بناء قيمي وسلوكي راقٍ ومجتمع مدرسي مثالي منضبط", date: "1447/02/12هـ",
+    o1: "تأصيل وترسيخ المكارم والأخلاق الإسلامية والآداب السلوكية والوطنية السامية في نفوس وعقول أجيال الطلاب بالمدرسة بوعي ونضج.",
+    o2: "تحويل المبادئ والقيم النظرية إلى سلوكيات وممارسات يومية ملموسة في تعاملات الطالب مع معلميه, زملائه, وأسرته بكفاءة متميزة.",
+    o3: "تعزيز قيم الاحترام, الصدق, الأمانة, الرفق, والمسؤولية الشخصية وجعلها معياراً أساسياً للتميز والتفوق الشخصي والأكاديمي الشامل.",
+    o4: "حد وخفض السلوكيات والممارسات السلبية والعدوانية والتنمر والمخالفات السلوكية بالطرق التوجيهية والتربوية الحكيمة والمؤثرة بوعي.",
+    o5: "خلق مناخ تعليمي وتربوي آمن, محفز, وإيجابي يقوم على الاحترام المتبادل والوئام الاجتماعي لدعم النمو النفسي السليم للطلاب.",
+    o6: "تكامل الدور الرسالة التربوية والقيمية بين الأسرة والمدرسة لبناء أجيال منضبطة تمثل مجتمعها ووطنها بأرقى الأخلاق الإنسانية.",
+    a1: "تدشين حملة (خلقي يمثلني عنوان تميزي) المكثفة في الإذاعة المدرسية وشاشات العرض والمنصات والوسائط الإعلامية بانتظام ممتد.",
+    a2: "تطبيق نظام (بطاقات الفرسان للتعزيز السلوكي الفوري) الممنوحة من المعلمين للطلاب الأكثر انضباطاً ورفقاً وأمانة داخل الصفوف بوعي.",
+    a3: "عقد لقاءات حوارية دورية وجلسات نقاش تفاعلية يقودها الموجه الطلابي لمناقشة مظاهر السلوك الإيجابي ومكارم الأخلاق في الحياة اليومية.",
+    a4: "الاحتفاء بـ (أسبوع الأخلاق الراقية) لتتويج فرسان السلوك, الطلاب المثاليين, والفصول المتميزة بالانضباط الشامل في حفل بهيج ومحفز."
+  },
+  ethics_ambassadors: {
+    name: "مبادرة سفراء الأخلاق", loc: "الساحات العامة والفصول والمركز التربوي والإرشادي",
+    target: "جماعة الإرشاد الطلابي والطلاب المتميزين سلوكياً وبناءً", count: "رواد وقادة التوجيه السلوكي والأخلاقي الراقي بين الأقران", date: "1447/02/19هـ",
+    o1: "تأهيل وتدريب نخبة من الطلاب المنضبطين والمتميزين سلوكياً ليكونوا قادة وسفراء لنشر مكارم الأخلاق والرفق والوئام بين زملائهم بوعي.",
+    o2: "ترسيخ السلوكيات الحضارية الإيجابية والآداب والذوق العام داخل وخارج المحيط التربوي وجعلها نمط تعامل يومي مستدام ومتناسق.",
+    o3: "تفعيل وتعزيز أسلوب (التوجيه والتعليم بين الأقران) لمكافحة مظاهر التنمر والعدوان والممارسات السلبية بالطرق التربوية الحكيمة بنضج.",
+    o4: "تنمية مهارات القيادة الشخصية, المسؤولية الاجتماعية, التواصل الفعال, والإنصات لدى الطلاب المشاركين بالمنظومة القيادية الطموحة.",
+    o5: "خلق مناخ تعليمي وتربوي آمن, محمّي, ومحفز يدعم الاستقرار النفسي الشامل والتفوق الأكاديمي لجميع الطلاب تلاحماً متكاملاً وعالٍ.",
+    o6: "رصد وبناء وتوثيق السلوكيات الإيجابية العفوية للطلاب بال ميدان وإبرازها كقدوات صالحة يحتذى بها في كافة المناشط والوسائط المدرسية.",
+    a1: "تعيين وتكريم (سفراء الأخلاق) بشكل رسمي في كل فصل دراسي ومنحهم بطاقات وشواهد قيادية لمتابعة ونشر قيم الرفق والانضباط بانتظام.",
+    a2: "ورشة عمل تدريبية وتفاعلية مكثفة يقودها الموجه الطلابي بعنوان (مهارات سفير الأخلاق... فنون التواصل الاحترافي وحل النزاعات بين الزملاء).",
+    a3: "إطلاق مبادرة (بطاقات التقدير والشكر من سفير) حيث يقوم السفراء برصد وتكريم زملائهم المتميزين أخلاقياً وعفوياً في أفنية المدرسة بوعي.",
+    a4: "الاحتفاء السنوي بالحفل الختامي للمبادرة لتتويج (سفير المدرسة الأول) الأكثر تميزاً وتأثيراً في الميدان السلوكي والتربوي بحضور أولياء الأمور."
+  },
+  digital_values_initiative: {
+    name: "مبادرة القيم الرقمية", loc: "معمل الحاسب الآلي والقاعات الذكية والمنصات التفاعلية",
+    target: "جميع الطلاب والمجتمع التعليمي وأولياء الأمور والأسر", count: "مواطنة رقمية واعية واستخدام آمن وصحي للتقنية بالمنظومة", date: "1447/03/12هـ",
+    o1: "نشر ثقافة المواطنة الرقمية الواعية وتأصيل السلوكيات والأخلاق الإسلامية في استخدام شبكة الإنترنت والوسائط التقنية بوعي دقيق.",
+    o2: "توعية الطلاب بمخاطر الأمن السيبراني, الجرائم المعلوماتية, التنمر الرقمي, وكيفية حماية البيانات الشخصية والحسابات من الاختراق بنضج.",
+    o3: "تمكين الطلاب من استغلال وتوجيه التقنيات الحديثة وأدوات الذكاء الاصطناعي نحو الإنتاج العلمي والابتكار والتميز الأكاديمي والتحصيل.",
+    o4: "شرح بروتوكولات الحماية وصناعة كلمات المرور المعقدة وآليات التحقق الثنائي والتعامل السليم مع الرسائل المشبوهة والروابط الضارة.",
+    o5: "تعزيز قيم التفكير الناقد والتحليل الذاتي لفرز وتدقيق المحتوى المعرفي الرقمي والابتعاد عن الشائعات والأفكار غير النظامية بالميدان.",
+    o6: "تكامل الدور والتوجيه التربوي مع الأسر لتنظيم أوقات استخدام الأجهزة والوقاية من الإدمان الرقمي لبناء شخصية متزنة صحياً وجسدياً.",
+    a1: "دورة تدريبية عملية ومكثفة بعنوان (طرق الأمان الرقمي وفنون المواطنة الرقمية الواعية في عصر الذكاء الاصطناعي والتحول التكنولوجي الشامل).",
+    a2: "حملة توعوية إذاعية لفرز وشرح مواد لائحة مكافحة الجرائم المعلوماتية ونظام حماية البيانات الشخصية السعودي تماشياً مع رؤية 2030.",
+    a3: "مسابقة معرفية رقمية وتفاعلية (واعي تقنياً) لإجراء قياس مستوى الوعي الرقمي للطلاب وتوزيع هدايا تقنية محفزة للفائزين بتميز واقتدار.",
+    a4: "تصميم ونشر بنك رسائل وفيديوهات إرشادية وتوعوية قصيرة وبثها بانتظام للأسر والطلاب عبر شاشات العرض المدرسية ومجموعات التواصل المعتمدة."
+  },
+  volunteer_your_skill: {
+    name: "مبادرة تطوع بمهارتك", loc: "قاعة المبادرات والأنشطة ومرافق وفصول المدرسة الشاملة",
+    target: "كافة الطلاب والمعلمين وأصحاب المهارات والخبرات بالميدان", count: "أثر تطوعي تخصصي مستدام وتكامل معرفي بين مجتمع المدرسة", date: "1447/04/18هـ",
+    o1: "ترسيخ وتفعيل ثقافة العمل التطوعي التخصصي والمبني على المهارات والقدرات الشخصية كقيمة دينية ووطنية راسخة في عقول الناشئة بوعي.",
+    o2: "توفير مساحات حرة وفرص نظامية للطلاب والمعلمين لتقديم الدعم والمساندة ونقل خبراتهم لزملائهم في البيئة التعليمية والمجتمعية بنضج.",
+    o3: "إكساب الطلاب مهارات التنظيم, القيادة, التخطيط للمبادرات التطوعية, والعمل الجماعي والتعاون البناء بروح الفريق الواحد المتميز بكفاءة.",
+    o4: "دعم مستهدفات رؤية المملكة 2030 في الوصول إلى مليون متطوع منضبط ومؤهل والاعتزاز بالمواطنة الصالحة والمسؤولية الاجتماعية الفاعلة.",
+    o5: "رعاية ومساعدة الطلاب دون المتوسط في التحصيل الدراسي أو التقني من خلال مبادرات دعم يقودها زملائهم المتميزون تحت إشراف تربوي.",
+    o6: "تجميل وتحسين المظهر البصري العام والبيئة التعليمية لكافة مرافق المدرسة الفاعلة من خلال استغلال مهارات الفنون والتشكيل بانتظام.",
+    a1: "تأسيس وتدشين سجل (بنك المهارات والقدرات الطلابية والتطوعية) لتسجيل وتصنيف طاقات المتطوعين (برمجة, خط, رسم, شرح مواد, تنظيم ورش).",
+    a2: "إطلاق مبادرة (الطلاب يساندون الأقران) حيث يقوم الطلاب البارعون بتقديم جلسات مراجعة وتبسيط للمفاهيم الصعبة لزملائهم في حصص النشاط بوعي.",
+    a3: "تنفيذ حملة تطوعية ميدانية وتخصصية لصيانة وتحديث برمجيات معمل الحاسب أو تجميل جدران المرسم والحدائق المدرسية بال زراعة والتشجير.",
+    a4: "الحفل السنوي وتكريم (فرسان العطاء التخصصي) وتوزيع الأوسمة وشواهد الساعات التطوعية المعتمدة عبر المنصة الوطنية للعمل التطوعي ببهجة."
+  },
+  biography_reflections: {
+    name: "مبادرة تأملات في السيرة", loc: "مصلى المدرسة الرئيسي والصالة الثقافية للمنظومة",
+    target: "جميع الطلاب ومنسوبي البيئة التعليمية والتربوية والأسرة", count: "اقتداء سلوكي وتأمل قيمي محوري في أخلاق السيرة النبوية العطرة", date: "1447/03/12هـ",
+    o1: "غرس وتعميق محبة الرسول المصطفى ﷺ في نفوس وعقول الطلاب وترجمتها إلى سلوك واقتداء عملي دائم في الحياة اليومية بوعي وإجلال.",
+    o2: "تعريف الطلاب بالشمائل المحمدية, الأخلاق النبوية السامية, والمواقف الحكيمة من السيرة العطرة لتطبيقها في التعاملات السلوكية الراقية.",
+    o3: "ترسيخ قيم الأدب, الاحترام, الصدق, الأمانة, والرفق انطلاقاً من التوجيهات والتأملات في السيرة النبوية الشريفة والمنهج القويم بنضج.",
+    o4: "تحسين السلوك العام والانضباط الأخلاقي وتطوير البدائل التربوية الحكيمة داخل وخارج أسوار البيئة المدرسية تلاحماً متكاملاً ومتميزاً.",
+    o5: "ربط الطلاب بالفهم الصحيح والواعي للأحاديث والمواقف التاريخية النبوية وحمايتهم فكرياً وأخلاقياً بالمنظومة التعليمية الفاعلة بكفاءة.",
+    o6: "بناء مجتمع مدرسي متراحم, مترابط, ومتسامح يسوده السلام والوئام والتعاون البناء تماشياً مع القيم والمبادئ الإسلامية الراسخة للأجيال.",
+    a1: "إطلاق الحملة السلوكية والأخلاقية الممتدة (بأخلاقه نقتدي ونرتقي) تركز على تأمل خلق نبوي محدد كل أسبوع وتفعيله في كافة المناشط والوسائط.",
+    a2: "تنفيذ مسابقة (ملخص كتاب في السيرة النبوية) وحفظ وشرح الأحاديث الشريفة المتعلقة بالأخلاق والتعاملات اليومية تحت إشراف معلمين متخصصين.",
+    a3: "تخصيص فقرات منبر الإذاعة المدرسية اليومي وحصص النشاط لتقديم قصص ومواقف ملهمة من السيرة النبوية في العفو, الصبر, والتعامل الراقي بوعي.",
+    a4: "حفل وفير لتتويج فرسان مبادرة التأملات, الطلاب الأكثر انضباطاً وتمثيلاً للأخلاق النبوية في تعاملاتهم اليومية بشواهد ودروع تشجيعية محفزة."
+  },
+  rise_together: {
+    name: "معاً نرتقي (أولياء الأمور)", loc: "قاعة الاجتماعات الكبرى والمسرح ومنصة مدرستي الرقمية",
+    target: "أولياء الأمور والأسر والهيئة التعليمية والإدارية والإرشادية", count: "تكامل تربوي متسق وشراكة مستدامة لدعم التحصيل والسلوك للأبناء", date: "1447/02/24هـ",
+    o1: "بناء وتوطيد جسور تواصل وشراكة استراتيجية متينة ومستدامة بين الأسرة والمدرسة لدعم مسيرة التفوق والتحصيل الأكاديمي والتميز للطلاب بوعي.",
+    o2: "إشراك أولياء الأمور بوعي ونضج في متابعة ورصد مستويات التحصيل والانضباط السلوكي والحد من ظاهرة الغياب والتأخر الصباحي بانتظام مستمر.",
+    o3: "توظيف التقنيات الحديثة والمنصات الرقمية (منصة مدرستي) لتسهيل وتسريع عمليات تبادل التقارير والمؤشرات والتغذية الراجعة الفعالة والموثوقة كفاءة.",
+    o4: "توعية الأسر بالأنظمة واللوائح المدرسية (لائحة السلوك والمواظبة المحدثة) وآليات تقديم الدعم النفسي والتربوي السليم بالمنزل أثناء الاختبارات.",
+    o5: "عقد لقاءات وندوات دورية وتكاملية لمناقشة التحديات السلوكية والتعليمية المشتركة ووضع حلول ناجعة تخدم بناء بيئة الطالب المتزنة والخلوقة.",
+    o6: "تعزيز الثقة الكاملة والرضا الشامل والوئام بين المجتمع المحلي والصرح التعليمي والتربوي المتميز تمثيلاً لأرقى معايير الجودة المؤسسية.",
+    a1: "تنظيم وانعقاد (مجلس أولياء الأمور والشركاء الدوري) في المسرح لمناقشة خطط ومشاريع المدرسة ومستويات الطلاب وسبل دعم التميز العلمي بتميز.",
+    a2: "تطبيق وإرسال نظام التقارير والبطاقات الإلكترونية الموجزة والموجّهة للأسر حول مستويات التحصيل الدراسي, الغياب, والانضباط السلوكي بانتظام.",
+    a3: "تقديم لقاء ورشة عمل رقمية (عن بعد) لأولياء الأمور بعنوان (الأسرة والمدرسة... معاً نرتقي بأبنائنا في تنظيم وقت الاستذكار وصناعة النجاح الطموح).",
+    a4: "الاحتفاء ببهجة وتكريم الأسر وأولياء الأمور الأكثر تواصلاً, تفاعلاً, ومتابعة جادة ومستمرة مع لجان المدرسة بشواهد ودروع تقديرية محفزة بوعي دقيق."
+  },
+  new: {
+    name: "", loc: "", target: "", count: "", date: "",
+    o1: "", o2: "", o3: "", o4: "", o5: "", o6: "",
+    a1: "", a2: "", a3: "", a4: ""
+  }
+};
+
+function switchProgram() {
+  const pCode = document.getElementById('programSlicer').value;
+  const pData = altPrograms[pCode];
+  
+  if (!pData) return;
+
+  document.getElementById('top-banner-title').value = pData.name;
+  document.getElementById('prog-name').value = pData.name;
+  document.getElementById('prog-loc').value = pData.loc;
+  
+  document.getElementById('kpi-target').value = pData.target;
+  document.getElementById('kpi-count').value = pData.count;
+  document.getElementById('kpi-date').value = pData.date;
+  
+  document.getElementById('obj-1').value = pData.o1;
+  document.getElementById('obj-2').value = pData.o2;
+  document.getElementById('obj-3').value = pData.o3;
+  document.getElementById('obj-4').value = pData.o4;
+  document.getElementById('obj-5').value = pData.o5;
+  document.getElementById('obj-6').value = pData.o6;
+
+  document.getElementById('act-1').value = pData.a1;
+  document.getElementById('act-2').value = pData.a2;
+  document.getElementById('act-3').value = pData.a3;
+  document.getElementById('act-4').value = pData.a4;
+}
+</script>
+
+</body>
+</html>
