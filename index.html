@@ -327,13 +327,75 @@ body {
   overflow: hidden;
 }
 
+@media print /* ============================================================
+   PRINT ONLY STYLING (ABSOLUTE CRITICAL ONE PAGE FORCED)
+============================================================ */
 @media print {
-  .obj-textarea, .act-textarea {
-    height: auto !important;
-    min-height: 34px !important;
-    overflow: visible !important;
-    white-space: pre-wrap !important;
+  @page { 
+    size: A4 portrait; 
+    margin: 0 !important; 
   }
+  
+  html, body { 
+    height: auto !important; 
+    min-height: 100% !important;
+    overflow: visible !important; 
+    margin: 0 !important; 
+    padding: 0 !important; 
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  #topbar, #slicers-bar, .img-placeholder, .notice-text { 
+    display: none !important; 
+  }
+  
+  #canvas-area { 
+    padding: 0 !important; 
+    display: block !important;
+  }
+  
+  #page {
+    box-shadow: none !important;
+    width: 100% !important;
+    height: auto !important; /* تحويل الارتفاع إلى تلقائي لمنع اقتصاص الترويسة */
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important; /* ترتيب العناصر بالتتابع لمنع قفز الترويسة */
+  }
+  
+  #header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 15px 20px !important;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%) !important;
+  }
+
+  .program-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
+  .kpi-container { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
+  .objectives-list, .activities-list { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .shawahed-grid-one-row { display: grid !important; grid-template-columns: repeat(6, 1fr) !important; gap: 10px !important; }
+  
+  .info-val-input { background: #ffffff !important; border: none !important; padding: 2px 0 !important; }
+  .img-upload-box { border: 1px solid #dde3ea !important; background: #ffffff !important; height: 85px !important; }
+  .img-upload-box:has(img) { border: none !important; }
+  .objective-row, .activity-row { background: #ffffff !important; }
+  
+  #footer { 
+    margin-top: auto !important; /* دفع التذييل لأسفل الصفحة بشكل مرن */
+    position: relative !important; 
+    bottom: 0; 
+  }
+}
+
 }
 
 /* ─── SHAWAHED BOX STYLINGS (FORCED 1 ROW ONLY × 6 IMAGES) ─── */
